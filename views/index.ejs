@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<div class="text-center py-5">
+    <h1 class="display-4 mb-4">🏪 Bienvenido a Mi Tienda</h1>
+    <p class="lead mb-4">
+        Aplicación de ejemplo con <strong>Node.js + Express + Prisma + Multer + Supabase</strong>
+    </p>
+    <p class="text-muted">
+        <strong>Todo con Módulos ES</strong> (import/export) — Estándar moderno de JavaScript
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="/productos" class="btn btn-primary btn-lg">
+            📦 Ver Productos
+        </a>
+        <a href="/productos/crear" class="btn btn-success btn-lg">
+            ➕ Agregar Producto
+        </a>
+    </div>
+</div>
+
+<div class="row mt-5 text-center">
+    <div class="col-md-4">
+        <div class="card border-0 bg-transparent">
+            <div class="card-body">
+                <h2>🖼️</h2>
+                <h5>Subida de Imágenes</h5>
+                <p class="text-muted">Con Multer para manejo de archivos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-transparent">
+            <div class="card-body">
+                <h2>🗄️</h2>
+                <h5>Base de Datos</h5>
+                <p class="text-muted">PostgreSQL en Supabase con Prisma ORM</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-transparent">
+            <div class="card-body">
+                <h2>🎨</h2>
+                <h5>Diseño Responsive</h5>
+                <p class="text-muted">Con Bootstrap 5</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
