@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap');
 
-:root {
+html[data-theme="dark"], :root {
   --bg-base:      #0d1117;
   --bg-card:      #161b22;
   --bg-card-alt:  #1c2330;
@@ -29,6 +29,24 @@
   --font-display: 'Share Tech Mono', monospace;
 
   --transition:   0.18s ease;
+}
+
+html[data-theme="light"] {
+  --bg-base:        #f0f2f5;
+  --bg-card:        #ffffff;
+  --bg-card-alt:    #f6f8fa;
+  --bg-input:       #ffffff;
+  --cyan:           #0077cc;
+  --cyan-dim:       #0066bb;
+  --cyan-glow:      rgba(0, 119, 204, 0.12);
+  --text-primary:   #1c1e21;
+  --text-secondary: #444950;
+  --text-muted:     #9ca3af;
+  --border:         #d0d7de;
+  --border-focus:   #0077cc;
+  --danger:         #cf222e;
+  --warning:        #9a6700;
+  --success:        #1a7f37;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -712,7 +730,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   margin-bottom: 0.5rem;
 }
 
-
 .d-flex             { display: flex; }
 .align-items-center { align-items: center; }
 .justify-content-between { justify-content: space-between; }
@@ -730,7 +747,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .row-cols-md-2 > * { width: 50%; }
 .row-cols-lg-3 > * { width: 33.333%; }
 .g-4 { gap: 1.25rem; }
-
 
 .row.justify-content-center { justify-content: center; }
 
@@ -767,7 +783,6 @@ h4.text-primary { font-family: var(--font-display); font-size: 1.25rem; color: v
 
 .card-header.bg-success { background: rgba(63,185,80,0.15) !important; border-color: rgba(63,185,80,0.3); }
 .card-header h3, .card-header h2 { font-family: var(--font-display); font-size: 1.1rem; color: var(--text-primary); }
-
 
 @media (max-width: 768px) {
   .container, .main-container { padding: 1rem; }
