@@ -26,6 +26,7 @@
             <input
               type="email"
               class="form-control"
+              id="email"
               name="email"
               required>
           </div>
@@ -36,6 +37,7 @@
             <input
               type="password"
               class="form-control"
+              id="password"
               name="password"
               required>
           </div>
@@ -47,6 +49,16 @@
             Ingresar
 
           </button>
+          <div class="mt-3">
+            <button
+                type="button"
+                class="btn btn-outline-secondary w-100"
+                onclick="accesoRapido()">
+
+                ⚡ Acceso rápido (Profesor)
+
+            </button>
+          </div>
 
         </form>
 
@@ -58,4 +70,17 @@
 
 </div>
 
+<script>
+function accesoRapido() {
+
+    document.getElementById("email").value =
+        "admin@utn.com";
+
+    document.getElementById("password").value =
+        "123456";
+
+    document.querySelector("form").submit();
+
+}
+</script>
 <%- include('../partials/footer') %>

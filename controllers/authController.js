@@ -57,6 +57,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   req.session.destroy(() => {
+    res.clearCookie('connect.sid');
     res.redirect('/login');
   });
 };

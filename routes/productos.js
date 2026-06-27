@@ -1,9 +1,11 @@
 import express from 'express';
 import { listarProductos, mostrarFormCrear, crearProducto, mostrarFormEditar, actualizarProducto, eliminarProducto, activarProducto } from '../controllers/productoControllers.js';
 import upload from '../config/multer.js';
+import { verificarSesion } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
+router.use(verificarSesion);
 
 router.get('/', listarProductos);
 
