@@ -15,13 +15,14 @@ datasource db {
 // modelo para almecenar productos con imagenes
 
 model Producto {
-  id          Int      @id @default(autoincrement())
-  nombre      String
-  descripcion String?
-  precio      Float
-  imagen      String?
-  activo      Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  categoria String
+  marca     String
+  precio    Float
+  stock     Int
+  imagen    String?
+  createdAt DateTime @default(now())
 
   ventas VentaProducto[]
 }
@@ -35,22 +36,22 @@ model Usuario {
 }
 
 model Venta {
-  id        Int      @id @default(autoincrement())
-  cliente   String
-  fecha     DateTime @default(now())
-  total     Float
+  id      Int      @id @default(autoincrement())
+  cliente String
+  fecha   DateTime @default(now())
+  total   Float
 
   productos VentaProducto[]
 }
 
 model VentaProducto {
-  id         Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   ventaId    Int
   productoId Int
 
-  cantidad   Int
+  cantidad Int
 
-  venta       Venta    @relation(fields: [ventaId], references: [id])
-  producto    Producto @relation(fields: [productoId], references: [id])
+  venta    Venta    @relation(fields: [ventaId], references: [id])
+  producto Producto @relation(fields: [productoId], references: [id])
 }
