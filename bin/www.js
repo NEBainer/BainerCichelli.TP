@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 
-
+console.log("ESTOY EJECUTANDO BIN/WWW");
 import app from '../app.js';
 import debugLib from 'debug';
 import http from 'http';
+
 
 const debug = debugLib('mi-app-imagenes:server');
 
@@ -89,5 +90,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
+  
+  console.log("SERVIDOR ESCUCHANDO EN", bind);
   debug('Listening on ' + bind);
 }
