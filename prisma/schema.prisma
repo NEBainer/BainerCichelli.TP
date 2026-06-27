@@ -21,6 +21,7 @@ model Producto {
   marca     String
   precio    Float
   stock     Int
+  activo    Boolean  @default(true)
   imagen    String?
   createdAt DateTime @default(now())
 

@@ -9,7 +9,12 @@ const __dirname = path.dirname(__filename);
 export const listarProductos = async (req, res) => {
     try {
         const productos = await prisma.producto.findMany({
-            orderBy: {createdAt: 'desc'}
+            where: {
+                activo: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
         });
         res.render('productos/listar', {
             title: 'Lista de Productos',
@@ -30,13 +35,13 @@ export const mostrarFormCrear = (req, res) => {
 
 export const crearProducto = async (req, res) => {
     try {
-        const {nombre, descripcion, precio } = req.body;
+        const {nombre,categoria,marca,precio,stock} = req.body;
 
-        if(!nombre || !precio){
-            return res.render('productos/crear', {
-                title: 'Nuevo Producto',
-                error: 'Nombre y Precio son obligatorios'
-            })
+        if(!nombre ||!categoria ||!marca ||!precio ||!stock) {
+            return res.render("productos/crear", {
+                title: "Nuevo Producto",
+                error: "Todos los campos son obligatorios"
+            });
         }
 
         const imagen = req.file ? req.file.filename : null;
@@ -44,8 +49,10 @@ export const crearProducto = async (req, res) => {
         await prisma.producto.create({
             data: {
                 nombre,
-                descripcion: descripcion || null,
+                categoria,
+                marca,
                 precio: parseFloat(precio),
+                stock: parseInt(stock),
                 imagen
             }
         });
@@ -83,7 +90,7 @@ export const mostrarFormEditar = async (req, res) => {
 
 export const actualizarProducto = async (req, res) =>{
     try{
-        const {nombre, descripcion, precio } = req.body;
+        const {nombre,categoria,marca,precio,stock} = req.body;
         const id = parseInt(req.params.id);
         const productoActual = await prisma.producto.findUnique({
             where: {id}
@@ -105,8 +112,10 @@ export const actualizarProducto = async (req, res) =>{
             where: {id},
             data: {
                 nombre,
-                descripcion: descripcion || null,
+                categoria,
+                marca,
                 precio: parseFloat(precio),
+                stock: parseInt(stock),
                 imagen
             }
         });
@@ -119,28 +128,46 @@ export const actualizarProducto = async (req, res) =>{
     }
 };
 
-export const eliminarProducto = async (req, res) =>{
-    try{
-        const id = parseInt(req.params.id);
-        const producto = await prisma.producto.findUnique({
-            where : {id}
-        });
+export const eliminarProducto = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
 
-        if(producto && producto.imagen){
-            const rutaImagen = path.join(__dirname, '../public/images', producto.imagen);
-            if (fs.existsSync(rutaImagen)){
-                fs.unlinkSync(rutaImagen);
-            }
-        }
+    await prisma.producto.update({
+      where: { id },
+      data: {
+        activo: false
+      }
+    });
 
-        await prisma.producto.delete({
-            where: {id}
-        });
+    res.redirect("/productos");
 
-        res.redirect('/productos');
-    }catch(error){
-        console.error('Error al eliminar producto: ', error);
-        res.status(500).render('error', {message: 'Error al eliminar el producto'});
-    }
-}
+  } catch (error) {
+    console.error("Error al desactivar producto:", error);
+
+    res.status(500).render("error", {
+      message: "Error al desactivar el producto"
+    });
+  }
+};
+
+export const activarProducto = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    await prisma.producto.update({
+      where: { id },
+      data: {
+        activo: true
+      }
+    });
+
+    res.redirect("/productos");
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).render("error", {
+      message: "Error al activar producto"
+    });
+  }
+};
 

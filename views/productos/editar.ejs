@@ -38,11 +38,60 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" 
-                                  id="descripcion" 
-                                  name="descripcion" 
-                                  rows="3"><%= producto.descripcion || '' %></textarea>
+                        <label for="categoria" class="form-label">
+                            Categoría *
+                        </label>
+
+                        <select
+                            class="form-select"
+                            id="categoria"
+                            name="categoria"
+                            required>
+
+                            <option value="Componente"
+                                <%= producto.categoria === "Componente"
+                                    ? "selected"
+                                    : "" %>>
+                                Componente
+                            </option>
+
+                            <option value="Periferico"
+                                <%= producto.categoria === "Periferico"
+                                    ? "selected"
+                                    : "" %>>
+                                Periférico
+                            </option>
+
+                        </select>
+                    </div>   
+                    
+                    <div class="mb-3">
+                        <label for="marca" class="form-label">
+                            Marca *
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="marca"
+                            name="marca"
+                            value="<%= producto.marca %>"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">
+                            Stock *
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="stock"
+                            name="stock"
+                            value="<%= producto.stock %>"
+                            min="0"
+                            required>
                     </div>
 
                     <div class="mb-3">
