@@ -1,5 +1,5 @@
 import express from 'express';
-import { listarProductos, mostrarFormCrear, crearProducto, mostrarFormEditar, actualizarProducto, eliminarProducto } from '../controllers/productoControllers.js';
+import { listarProductos, mostrarFormCrear, crearProducto, mostrarFormEditar, actualizarProducto, eliminarProducto, activarProducto } from '../controllers/productoControllers.js';
 import upload from '../config/multer.js';
 
 const router = express.Router();
@@ -14,5 +14,6 @@ router.get('/editar/:id', mostrarFormEditar);
 router.post('/editar/:id', upload.single('imagen'), actualizarProducto);
 
 router.post('/eliminar/:id', eliminarProducto);
+router.post('/activar/:id', activarProducto);
 
 export default router;

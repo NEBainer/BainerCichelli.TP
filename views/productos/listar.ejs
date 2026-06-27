@@ -60,18 +60,50 @@
 
                 <div class="card-footer bg-white border-top-0">
                     <div class="d-flex gap-2">
-                        <a href="/productos/editar/<%= producto.id %>" 
-                           class="btn btn-warning btn-sm flex-fill">
+
+                        <a href="/productos/editar/<%= producto.id %>"
+                        class="btn btn-warning btn-sm flex-fill">
                             ✏️ Editar
                         </a>
-                        <form action="/productos/eliminar/<%= producto.id %>" 
-                              method="POST" 
-                              class="flex-fill"
-                              onsubmit="return confirm('¿Eliminar este producto?')">
-                            <button type="submit" class="btn btn-danger btn-sm w-100">
-                                🗑️ Eliminar
-                            </button>
-                        </form>
+
+                        <% if (producto.activo) { %>
+
+                            <form
+                                action="/productos/eliminar/<%= producto.id %>"
+                                method="POST"
+                                class="flex-fill"
+                                onsubmit="return confirm('¿Desactivar este producto?')">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger btn-sm w-100">
+
+                                    🗑️ Desactivar
+
+                                </button>
+
+                            </form>
+
+                        <% } else { %>
+
+                            <form
+                                action="/productos/activar/<%= producto.id %>"
+                                method="POST"
+                                class="flex-fill"
+                                onsubmit="return confirm('¿Activar este producto?')">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success btn-sm w-100">
+
+                                    🔄 Activar
+
+                                </button>
+
+                            </form>
+
+                        <% } %>
+
                     </div>
                 </div>
             </div>
