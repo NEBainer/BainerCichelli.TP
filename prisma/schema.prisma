@@ -1,18 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = "postgresql://postgres:DjAWmt9jhAp0W2fh@db.ogceqmdckxrbekwbmqhy.supabase.co:5432/postgres"
 }
-
-// modelo para almecenar productos con imagenes
 
 model Producto {
   id          Int      @id @default(autoincrement())
@@ -20,37 +13,36 @@ model Producto {
   descripcion String?
   precio      Float
   imagen      String?
+  tipo        String
   activo      Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  creadoEn    DateTime @default(now())
 
-  ventas VentaProducto[]
+  ventas      VentaProducto[]
 }
 
 model Usuario {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  nombre   String
 }
 
 model Venta {
-  id        Int      @id @default(autoincrement())
-  cliente   String
-  fecha     DateTime @default(now())
-  total     Float
+  id            Int      @id @default(autoincrement())
+  nombreCliente String
+  total         Float
+  fecha         DateTime @default(now())
 
-  productos VentaProducto[]
+  productos     VentaProducto[]
 }
 
 model VentaProducto {
-  id         Int @id @default(autoincrement())
-
+  id         Int      @id @default(autoincrement())
   ventaId    Int
   productoId Int
-
   cantidad   Int
+  precioUnit Float
 
-  venta       Venta    @relation(fields: [ventaId], references: [id])
-  producto    Producto @relation(fields: [productoId], references: [id])
+  venta      Venta    @relation(fields: [ventaId],    references: [id])
+  producto   Producto @relation(fields: [productoId], references: [id])
 }
