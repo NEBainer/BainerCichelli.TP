@@ -7,6 +7,9 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import indexRouter from './routes/index.js';
 import productoRouter from './routes/productos.js';
+import apiUsuariosRouter from './routes/apiUsuarios.js';
+import session from 'express-session';
+import authRouter from './routes/auth.js';
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,11 +24,18 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(session({
+  secret: 'programacion3tp',
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/', authRouter);
 app.use('/productos', productoRouter);
+app.use('/api/usuarios', apiUsuariosRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,5 +52,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 export default app;
