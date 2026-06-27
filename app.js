@@ -11,6 +11,7 @@ import apiUsuariosRouter from './routes/apiUsuarios.js';
 import session from 'express-session';
 import authRouter from './routes/auth.js';
 import apiProductosRouter from "./routes/apiProductos.js";
+import apiVentasRouter from "./routes/apiVentas.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +39,7 @@ app.use('/', authRouter);
 app.use('/productos', productoRouter);
 app.use('/api/usuarios', apiUsuariosRouter);
 app.use("/api/productos", apiProductosRouter);
+app.use("/api/ventas", apiVentasRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
