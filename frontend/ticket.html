@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigaShop — Ticket</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">⚡</div>
+        <div>
+          GigaShop
+          <span class="navbar__tagline">Periféricos & Componentes</span>
+        </div>
+      </a>
+      <div class="navbar__nav">
+        <span class="navbar__credits">Bainer & Cichelli</span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="ticket-wrapper">
+
+    <div style="text-align:center; margin-bottom: 1.5rem;">
+      <div style="font-size:3rem; margin-bottom:0.5rem;">✅</div>
+      <div style="font-size:1.25rem; font-weight:600; color:var(--text-1)">¡Compra realizada con éxito!</div>
+      <div style="font-size:0.875rem; color:var(--text-2); margin-top:0.25rem">Gracias por tu compra en GigaShop</div>
+    </div>
+
+    <div class="ticket" id="ticket-para-pdf">
+
+      <div class="ticket__header">
+        <div class="ticket__logo">⚡ GigaShop</div>
+        <div style="font-size:0.75rem; color:var(--text-2); letter-spacing:0.08em; text-transform:uppercase; margin-top:0.25rem">
+          Periféricos & Componentes
+        </div>
+        <div class="ticket__title" id="ticket-titulo">Comprobante de compra</div>
+        <div class="ticket__meta" id="ticket-meta"></div>
+      </div>
+
+      <div class="ticket__body">
+
+        <div class="ticket__section-title">Datos del cliente</div>
+        <div class="ticket__row">
+          <span style="color:var(--text-2)">Nombre</span>
+          <span style="font-weight:600" id="ticket-nombre">—</span>
+        </div>
+        <div class="ticket__row">
+          <span style="color:var(--text-2)">Fecha</span>
+          <span id="ticket-fecha">—</span>
+        </div>
+        <div class="ticket__row" style="margin-bottom:1.25rem">
+          <span style="color:var(--text-2)">N° de compra</span>
+          <span style="font-family:'Orbitron',monospace; font-size:0.8rem; color:var(--accent)" id="ticket-id">—</span>
+        </div>
+
+        <div class="ticket__section-title" style="margin-top:1rem">Productos</div>
+        <div id="ticket-productos">
+        </div>
+
+      </div>
+
+      <div class="ticket__total">
+        <span>Total</span>
+        <span class="ticket__total-amount" id="ticket-total">$0</span>
+      </div>
+
+      <div style="padding:1rem 1.5rem; text-align:center; border-top:1px solid var(--border)">
+        <div style="font-size:0.75rem; color:var(--text-3)">
+          GigaShop — Periféricos & Componentes<br>
+          Bainer & Cichelli — Programación 3
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ticket__footer" style="margin-top:1rem; justify-content:center">
+      <button class="btn btn-secondary" onclick="descargarPDF()">
+        📄 Descargar PDF
+      </button>
+      <button class="btn btn-primary" onclick="nuevaCompra()">
+        🔄 Nueva compra
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+
+    const venta = JSON.parse(localStorage.getItem('ultimaVenta'));
+    if (!venta) window.location.href = 'index.html';
+
+    const fecha = new Date(venta.fecha);
+    const fechaFormateada = fecha.toLocaleDateString('es-AR', {
+      day:   '2-digit',
+      month: '2-digit',
+      year:  'numeric',
+      hour:  '2-digit',
+      minute:'2-digit'
+    });
+
+    document.getElementById('ticket-nombre').textContent = venta.nombreCliente;
+    document.getElementById('ticket-fecha').textContent  = fechaFormateada;
+    document.getElementById('ticket-id').textContent     = '#' + String(venta.id).padStart(6, '0');
+    document.getElementById('ticket-total').textContent  = '$' + venta.total.toLocaleString();
+    document.getElementById('ticket-titulo').textContent = `Comprobante de compra`;
+    document.getElementById('ticket-meta').textContent   = fechaFormateada;
+
+    document.getElementById('ticket-productos').innerHTML = venta.productos.map(item => `
+      <div class="ticket__row">
+        <div>
+          <span class="ticket__row-name">${item.nombre}</span>
+          <span class="ticket__row-qty">x${item.cantidad}</span>
+        </div>
+        <span class="ticket__row-price">$${(item.precio * item.cantidad).toLocaleString()}</span>
+      </div>
+    `).join('');
+
+    function descargarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a5' });
+
+      const margin  = 15;
+      const pageW   = doc.internal.pageSize.getWidth();
+      let y = margin;
+
+      doc.setFillColor(17, 24, 39);
+      doc.rect(0, 0, pageW, 35, 'F');
+
+      doc.setTextColor(0, 229, 255);
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('GigaShop', pageW / 2, 14, { align: 'center' });
+
+      doc.setFontSize(7);
+      doc.setTextColor(148, 163, 184);
+      doc.setFont('helvetica', 'normal');
+      doc.text('PERIFÉRICOS & COMPONENTES', pageW / 2, 20, { align: 'center' });
+
+      doc.setFontSize(10);
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.text('COMPROBANTE DE COMPRA', pageW / 2, 29, { align: 'center' });
+
+      y = 45;
+
+      doc.setFillColor(26, 34, 53);
+      doc.roundedRect(margin, y, pageW - margin * 2, 28, 2, 2, 'F');
+
+      doc.setFontSize(7);
+      doc.setTextColor(100, 116, 139);
+      doc.setFont('helvetica', 'normal');
+      doc.text('DATOS DEL CLIENTE', margin + 4, y + 7);
+
+      doc.setFontSize(9);
+      doc.setTextColor(241, 245, 249);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Cliente: ${venta.nombreCliente}`, margin + 4, y + 15);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Fecha: ${fechaFormateada}`, margin + 4, y + 22);
+      doc.text(`N°: #${String(venta.id).padStart(6, '0')}`, pageW - margin - 4, y + 22, { align: 'right' });
+
+      y += 36;
+
+      doc.setFontSize(7);
+      doc.setTextColor(100, 116, 139);
+      doc.setFont('helvetica', 'normal');
+      doc.text('PRODUCTOS', margin, y);
+      y += 5;
+
+      doc.setDrawColor(30, 41, 59);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW - margin, y);
+      y += 5;
+
+      venta.productos.forEach(item => {
+        doc.setFontSize(9);
+        doc.setTextColor(241, 245, 249);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${item.nombre}`, margin, y);
+
+        doc.setTextColor(100, 116, 139);
+        doc.setFontSize(8);
+        doc.text(`x${item.cantidad}`, margin + 95, y, { align: 'right' });
+
+        doc.setTextColor(0, 229, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`$${(item.precio * item.cantidad).toLocaleString()}`, pageW - margin, y, { align: 'right' });
+
+        doc.setDrawColor(30, 41, 59);
+        doc.setLineWidth(0.2);
+        y += 2;
+        doc.line(margin, y, pageW - margin, y);
+        y += 6;
+      });
+
+      y += 2;
+      doc.setFillColor(0, 229, 255);
+      doc.roundedRect(margin, y, pageW - margin * 2, 14, 2, 2, 'F');
+
+      doc.setFontSize(9);
+      doc.setTextColor(10, 14, 23);
+      doc.setFont('helvetica', 'bold');
+      doc.text('TOTAL', margin + 4, y + 9);
+      doc.text(`$${venta.total.toLocaleString()}`, pageW - margin - 4, y + 9, { align: 'right' });
+
+      y += 22;
+      doc.setFontSize(7);
+      doc.setTextColor(71, 85, 105);
+      doc.setFont('helvetica', 'normal');
+      doc.text('GigaShop — Periféricos & Componentes', pageW / 2, y, { align: 'center' });
+      doc.text('Bainer & Cichelli — Programación 3', pageW / 2, y + 5, { align: 'center' });
+
+      doc.save(`ticket-gigashop-${String(venta.id).padStart(6,'0')}.pdf`);
+    }
+
+    function nuevaCompra() {
+      localStorage.removeItem('carrito');
+      localStorage.removeItem('ultimaVenta');
+      localStorage.removeItem('clienteNombre');
+      window.location.href = 'index.html';
+    }
+  </script>
+
+</body>
+</html>
