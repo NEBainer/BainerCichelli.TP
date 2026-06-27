@@ -1,8 +1,9 @@
 import express from "express";
-import { obtenerProductos } from "../controllers/apiProductoController.js";
+import {obtenerProductos, obtenerProductoPorId} from "../controllers/apiProductoController.js";
 
 const router = express.Router();
 
 router.get("/", obtenerProductos);
+router.get("/:id", obtenerProductoPorId);
 
 export default router;
