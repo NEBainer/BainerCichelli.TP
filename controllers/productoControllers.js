@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 export const listarProductos = async (req, res) => {
     try {
         const productos = await prisma.producto.findMany({
-            orderBy: {createAt: 'desc'}
+            orderBy: {createdAt: 'desc'}
         });
         res.render('productos/listar', {
             title: 'Lista de Productos',
