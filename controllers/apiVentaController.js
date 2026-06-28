@@ -122,3 +122,76 @@ export const crearVenta = async (req, res) => {
     }
 
 };
+
+export const obtenerVentas = async (req, res) => {
+
+    try {
+
+        const ventas = await prisma.venta.findMany({
+            orderBy: {
+                fecha: "desc"
+            }
+        });
+
+        res.json({
+            ok: true,
+            cantidad: ventas.length,
+            ventas
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error al obtener las ventas."
+        });
+
+    }
+
+};
+
+export const obtenerVentaPorId = async (req, res) => {
+
+    try {
+
+        const id = parseInt(req.params.id);
+
+        const venta = await prisma.venta.findUnique({
+            where: {
+                id
+            },
+            include: {
+                productos: {
+                    include: {
+                        producto: true
+                    }
+                }
+            }
+        });
+
+        if (!venta) {
+            return res.status(404).json({
+                ok: false,
+                mensaje: "Venta no encontrada."
+            });
+        }
+
+        res.json({
+            ok: true,
+            venta
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error al obtener la venta."
+        });
+
+    }
+
+};
