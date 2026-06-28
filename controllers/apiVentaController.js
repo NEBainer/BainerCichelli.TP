@@ -6,13 +6,6 @@ export const crearVenta = async (req, res) => {
 
         const { cliente, productos } = req.body;
 
-        if (!cliente || !productos || productos.length === 0) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: "Debe indicar un cliente y al menos un producto."
-            });
-        }
-
         // Buscar los productos solicitados
         const productosBD = await prisma.producto.findMany({
             where: {
@@ -128,6 +121,13 @@ export const obtenerVentas = async (req, res) => {
     try {
 
         const ventas = await prisma.venta.findMany({
+            include: {
+                productos: {
+                    include: {
+                        producto: true
+                    }
+                }
+            },
             orderBy: {
                 fecha: "desc"
             }

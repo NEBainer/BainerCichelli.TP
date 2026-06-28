@@ -76,7 +76,7 @@ export const obtenerProductoPorId = async (req, res) => {
 
         const id = parseInt(req.params.id);
 
-        const producto = await prisma.producto.findUnique({
+        const producto = await prisma.producto.findFirst({
             where: {
                 id,
                 activo: true

@@ -9,14 +9,19 @@ const __dirname = path.dirname(__filename);
 export const listarProductos = async (req, res) => {
     try {
         const productos = await prisma.producto.findMany({
+            where: {
+                activo: true
+            },
             orderBy: {
-                createdAt: 'desc'
+                createdAt: "desc"
             }
         });
+
         res.render('productos/listar', {
             title: 'Lista de Productos',
             productos: productos
         });
+        
     }catch (error){
         console.error('Error al listar productos: ', error);
         res.status(500).render('error', {message: 'Error al cargar productos'});
@@ -33,13 +38,6 @@ export const mostrarFormCrear = (req, res) => {
 export const crearProducto = async (req, res) => {
     try {
         const {nombre,categoria,marca,precio,stock} = req.body;
-
-        if(!nombre ||!categoria ||!marca ||!precio ||!stock) {
-            return res.render("productos/crear", {
-                title: "Nuevo Producto",
-                error: "Todos los campos son obligatorios"
-            });
-        }
 
         const imagen = req.file ? req.file.filename : null;
 
