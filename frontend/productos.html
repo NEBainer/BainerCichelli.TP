@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigaShop — Productos</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">⚡</div>
+        <div>
+          GigaShop
+          <span class="navbar__tagline">Periféricos & Componentes</span>
+        </div>
+      </a>
+      <div class="navbar__nav">
+        <a href="productos.html" class="navbar__link active">Productos</a>
+        <a href="carrito.html" class="cart-btn">
+          🛒 Carrito <span class="cart-count" id="nav-cart-count">0</span>
+        </a>
+        <span class="navbar__credits">Bainer & Cichelli</span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="page-header">
+      <div>
+        <div class="page-header__title" id="saludo">Productos</div>
+        <div class="page-header__sub">Elegí tus productos y agregálos al carrito</div>
+      </div>
+      <a href="carrito.html" class="btn btn-primary">
+        🛒 Ver carrito (<span id="header-cart-count">0</span>)
+      </a>
+    </div>
+
+    <div class="category-tabs">
+      <button class="category-tab active" onclick="cambiarCategoria('todos', this)">Todos</button>
+      <button class="category-tab" onclick="cambiarCategoria('periferico', this)">⌨️ Periféricos</button>
+      <button class="category-tab" onclick="cambiarCategoria('componente', this)">🔧 Componentes</button>
+    </div>
+
+    <div class="products-layout">
+
+      <div>
+        <div class="products-grid" id="products-grid">
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+      <div class="cart-sidebar">
+        <div class="cart-sidebar__title">
+          🛒 Tu carrito
+          <span class="cart-count" id="sidebar-cart-count">0</span>
+        </div>
+        <div id="cart-sidebar-items">
+          <div class="cart-sidebar__empty">Tu carrito está vacío</div>
+        </div>
+        <div id="cart-sidebar-footer" style="display:none">
+          <div class="cart-sidebar__total">
+            <span>Total</span>
+            <span class="cart-sidebar__total-amount" id="sidebar-total">$0</span>
+          </div>
+          <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="carrito.html" class="btn btn-primary btn-block">Ver carrito completo</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-agregado">
+    <div class="modal">
+      <div class="modal__icon">✅</div>
+      <div class="modal__title">¡Producto agregado!</div>
+      <div class="modal__body" id="modal-agregado-texto"></div>
+      <div class="modal__actions">
+        <button class="btn btn-secondary" onclick="cerrarModal('modal-agregado')">Seguir comprando</button>
+        <a href="carrito.html" class="btn btn-primary">Ver carrito</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+
+    const clienteNombre = localStorage.getItem('clienteNombre');
+    if (!clienteNombre) window.location.href = 'index.html';
+    document.getElementById('saludo').textContent = `Hola, ${clienteNombre} 👋`;
+
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+    function guardarCarrito() {
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+      actualizarContadores();
+      renderizarSidebar();
+    }
+
+    function actualizarContadores() {
+      const total = carrito.reduce((s, i) => s + i.cantidad, 0);
+      document.getElementById('nav-cart-count').textContent = total;
+      document.getElementById('header-cart-count').textContent = total;
+      document.getElementById('sidebar-cart-count').textContent = total;
+    }
+
+    function agregarAlCarrito(producto) {
+      const existe = carrito.find(i => i.id === producto.id);
+      if (existe) {
+        existe.cantidad++;
+      } else {
+        carrito.push({ ...producto, cantidad: 1 });
+      }
+      guardarCarrito();
+      document.getElementById('modal-agregado-texto').textContent =
+        `${producto.nombre} fue agregado al carrito.`;
+      abrirModal('modal-agregado');
+    }
+
+    function cambiarCantidad(id, delta) {
+      const item = carrito.find(i => i.id === id);
+      if (!item) return;
+      item.cantidad += delta;
+      if (item.cantidad <= 0) carrito = carrito.filter(i => i.id !== id);
+      guardarCarrito();
+      renderizarProductos();
+    }
+
+    function getCantidadEnCarrito(id) {
+      const item = carrito.find(i => i.id === id);
+      return item ? item.cantidad : 0;
+    }
+
+    function renderizarSidebar() {
+      const container = document.getElementById('cart-sidebar-items');
+      const footer    = document.getElementById('cart-sidebar-footer');
+
+      if (carrito.length === 0) {
+        container.innerHTML = '<div class="cart-sidebar__empty">Tu carrito está vacío</div>';
+        footer.style.display = 'none';
+        return;
+      }
+
+      footer.style.display = 'block';
+      container.innerHTML = carrito.map(item => `
+        <div class="cart-item">
+          <div class="cart-item__img" style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--bg-card-alt)">
+            ${item.imagen ? `<img src="${item.imagen}" style="width:44px;height:44px;object-fit:cover;border-radius:6px">` : '📦'}
+          </div>
+          <div class="cart-item__info">
+            <div class="cart-item__name">${item.nombre}</div>
+            <div class="cart-item__price">x${item.cantidad} — $${(item.precio * item.cantidad).toLocaleString()}</div>
+          </div>
+          <button class="cart-item__remove" onclick="cambiarCantidad(${item.id}, -1)">✕</button>
+        </div>
+      `).join('');
+
+      const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+      document.getElementById('sidebar-total').textContent = '$' + total.toLocaleString();
+    }
+
+    const PRODUCTOS_POR_PAGINA = 6;
+    let paginaActual = 1;
+    let categoriaActual = 'todos';
+    let todosLosProductos = [];
+
+    const productosDemo = [
+      { id:1, nombre:'Teclado Mecánico RGB',    precio:35000, tipo:'periferico',  descripcion:'Switch Blue, retroiluminación RGB por tecla', imagen:'' },
+      { id:2, nombre:'Mouse Gamer 16000 DPI',   precio:22000, tipo:'periferico',  descripcion:'Sensor óptico, 7 botones programables',        imagen:'' },
+      { id:3, nombre:'Auriculares 7.1 Virtual', precio:28000, tipo:'periferico',  descripcion:'Sonido envolvente, micrófono retráctil',        imagen:'' },
+      { id:4, nombre:'Monitor 144Hz 24"',       precio:95000, tipo:'periferico',  descripcion:'Full HD, 1ms, panel IPS, FreeSync',             imagen:'' },
+      { id:5, nombre:'Webcam 1080p 60fps',      precio:18000, tipo:'periferico',  descripcion:'Autoenfoque, corrección de luz',                imagen:'' },
+      { id:6, nombre:'Mousepad XL RGB',         precio:9000,  tipo:'periferico',  descripcion:'90x40cm, base antideslizante',                  imagen:'' },
+      { id:7, nombre:'Procesador Ryzen 5 5600', precio:85000, tipo:'componente',  descripcion:'6 núcleos, 12 hilos, hasta 4.4GHz',             imagen:'' },
+      { id:8, nombre:'RAM DDR4 16GB 3200MHz',   precio:32000, tipo:'componente',  descripcion:'Kit 2x8GB, CL16, disipador incluido',           imagen:'' },
+      { id:9, nombre:'SSD NVMe 1TB',            precio:48000, tipo:'componente',  descripcion:'3500MB/s lectura, M.2 PCIe 3.0',               imagen:'' },
+      { id:10,nombre:'GPU RX 6600 8GB',         precio:180000,tipo:'componente',  descripcion:'RDNA2, 8GB GDDR6, Ray Tracing',                 imagen:'' },
+      { id:11,nombre:'Fuente 650W 80+ Bronze',  precio:38000, tipo:'componente',  descripcion:'Modular, protección contra sobrecarga',         imagen:'' },
+      { id:12,nombre:'Cooler CPU 120mm',        precio:14000, tipo:'componente',  descripcion:'3 heatpipes, ventilador PWM silencioso',        imagen:'' },
+    ];
+
+    function cargarProductos() {
+      fetch('/api/productos?activo=true')
+        .then(r => r.json())
+        .then(data => {
+          todosLosProductos = data.productos || data;
+          renderizarProductos();
+        })
+        .catch(() => {
+          todosLosProductos = productosDemo;
+          renderizarProductos();
+        });
+    }
+
+    function productosFiltrados() {
+      if (categoriaActual === 'todos') return todosLosProductos;
+      return todosLosProductos.filter(p => p.tipo === categoriaActual);
+    }
+
+    function renderizarProductos() {
+      const filtrados = productosFiltrados();
+      const totalPaginas = Math.ceil(filtrados.length / PRODUCTOS_POR_PAGINA);
+      if (paginaActual > totalPaginas) paginaActual = 1;
+
+      const inicio = (paginaActual - 1) * PRODUCTOS_POR_PAGINA;
+      const pagina = filtrados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA);
+
+      const grid = document.getElementById('products-grid');
+
+      if (pagina.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-state__icon">📦</div>
+            <div class="empty-state__title">No hay productos en esta categoría</div>
+          </div>`;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      grid.innerHTML = pagina.map(p => {
+        const qty = getCantidadEnCarrito(p.id);
+        const imgHtml = p.imagen
+          ? `<img src="/images/${p.imagen}" class="product-card__img" alt="${p.nombre}">`
+          : `<div class="product-card__img-placeholder">${p.tipo === 'periferico' ? '⌨️' : '🔧'}</div>`;
+        const badgeClass = p.tipo === 'periferico' ? 'badge-periferico' : 'badge-componente';
+        const badgeLabel = p.tipo === 'periferico' ? 'Periférico' : 'Componente';
+
+        return `
+          <div class="product-card">
+            ${imgHtml}
+            <div class="product-card__body">
+              <span class="product-card__badge ${badgeClass}">${badgeLabel}</span>
+              <div class="product-card__name">${p.nombre}</div>
+              <div class="product-card__desc">${p.descripcion || ''}</div>
+              <div class="product-card__price">$${p.precio.toLocaleString()}</div>
+            </div>
+            <div class="product-card__footer">
+              <div class="qty-control">
+                <button class="qty-btn" onclick="cambiarCantidad(${p.id}, -1)" ${qty === 0 ? 'disabled style="opacity:0.3"' : ''}>−</button>
+                <span class="qty-num">${qty}</span>
+                <button class="qty-btn" onclick="cambiarCantidad(${p.id}, 1)">+</button>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick='agregarAlCarrito(${JSON.stringify(p)})'>
+                + Agregar
+              </button>
+            </div>
+          </div>`;
+      }).join('');
+
+      renderizarPaginacion(totalPaginas);
+    }
+
+    function renderizarPaginacion(total) {
+      const pag = document.getElementById('pagination');
+      if (total <= 1) { pag.innerHTML = ''; return; }
+
+      let html = `<button class="page-btn" onclick="irPagina(${paginaActual - 1})" ${paginaActual === 1 ? 'disabled' : ''}>‹</button>`;
+      for (let i = 1; i <= total; i++) {
+        html += `<button class="page-btn ${i === paginaActual ? 'active' : ''}" onclick="irPagina(${i})">${i}</button>`;
+      }
+      html += `<button class="page-btn" onclick="irPagina(${paginaActual + 1})" ${paginaActual === total ? 'disabled' : ''}>›</button>`;
+      pag.innerHTML = html;
+    }
+
+    function irPagina(n) {
+      paginaActual = n;
+      renderizarProductos();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cambiarCategoria(cat, btn) {
+      categoriaActual = cat;
+      paginaActual = 1;
+      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderizarProductos();
+    }
+
+    function abrirModal(id) {
+      document.getElementById(id).classList.add('open');
+      setTimeout(() => cerrarModal(id), 2500);
+    }
+
+    function cerrarModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    actualizarContadores();
+    renderizarSidebar();
+    cargarProductos();
+  </script>
+
+</body>
+</html>

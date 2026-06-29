@@ -1,18 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = "postgresql://postgres:DjAWmt9jhAp0W2fh@db.ogceqmdckxrbekwbmqhy.supabase.co:5432/postgres"
 }
-
-// modelo para almecenar productos con imagenes
 
 model Producto {
   id        Int      @id @default(autoincrement())
@@ -25,15 +18,14 @@ model Producto {
   imagen    String?
   createdAt DateTime @default(now())
 
-  ventas VentaProducto[]
+  ventas      VentaProducto[]
 }
 
 model Usuario {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  nombre   String
 }
 
 model Venta {
@@ -42,7 +34,8 @@ model Venta {
   fecha   DateTime @default(now())
   total   Float
 
-  productos VentaProducto[]
+
+  productos     VentaProducto[]
 }
 
 model VentaProducto {

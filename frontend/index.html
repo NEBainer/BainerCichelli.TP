@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigaShop — Bienvenido</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">⚡</div>
+        <div>
+          GigaShop
+          <span class="navbar__tagline">Periféricos & Componentes</span>
+        </div>
+      </a>
+      <div class="navbar__nav">
+        <span class="navbar__credits">Bainer & Cichelli</span>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="welcome-screen">
+    <div class="welcome-card">
+      <div class="welcome-card__logo">GigaShop</div>
+      <div class="welcome-card__sub">Periféricos & Componentes</div>
+
+      <h2 class="welcome-card__title">¡Bienvenido!</h2>
+      <p class="welcome-card__desc">Ingresá tu nombre para comenzar a comprar</p>
+
+      <input
+        type="text"
+        class="welcome-card__input"
+        id="nombre-input"
+        placeholder="Tu nombre..."
+        maxlength="40"
+        autocomplete="off"
+      >
+
+      <button class="btn btn-primary btn-block btn-lg" onclick="continuar()">
+        Continuar →
+      </button>
+
+      <p class="welcome-card__credits">Bainer & Cichelli — Programación 3</p>
+    </div>
+  </div>
+
+  <script>
+    /* Tema */
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+
+    /* Si ya hay nombre guardado, ir directo a productos */
+    if (localStorage.getItem('clienteNombre')) {
+      window.location.href = 'productos.html';
+    }
+
+    /* Enter para continuar */
+    document.getElementById('nombre-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') continuar();
+    });
+
+    function continuar() {
+      const nombre = document.getElementById('nombre-input').value.trim();
+      if (!nombre) {
+        document.getElementById('nombre-input').style.borderColor = 'var(--danger)';
+        document.getElementById('nombre-input').placeholder = 'Ingresá tu nombre primero';
+        return;
+      }
+      localStorage.setItem('clienteNombre', nombre);
+      window.location.href = 'productos.html';
+    }
+  </script>
+
+</body>
+</html>
