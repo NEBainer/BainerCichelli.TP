@@ -6,7 +6,7 @@ Sistema de gestión para un autoservicio de productos tecnológicos desarrollado
 ## 👥 Integrantes
 
 - Nicolás Ezequiel Bainer
-- Lucía Cichelli
+- Lucía Fiorella Cicchelli
 
 ---
 
