@@ -1,67 +1,203 @@
-# API REST
+# 🛒GigaShop
+![Vista principal](C:\Users\ezzeb\OneDrive\Desktop\Cositas\UTN\BainerCichelli.TP\screen.png)
 
-La aplicación expone los siguientes endpoints para ser consumidos por el frontend del autoservicio y el panel de administración.
+Sistema de gestión para un autoservicio de productos tecnológicos desarrollado como Trabajo Práctico Integrador para **Programación III**.
 
----
+## 👥 Integrantes
 
-# Productos
-
-| Método | Endpoint             | Descripción                                                           |
-| ------ | -------------------- | --------------------------------------------------------------------- |
-| GET    | `/api/productos`     | Obtiene el listado de productos activos. Admite filtros y paginación. |
-| GET    | `/api/productos/:id` | Obtiene la información de un producto específico.                     |
-
-## Parámetros soportados
-
-| Parámetro   | Ejemplo                               | Descripción                 |
-| ----------- | ------------------------------------- | --------------------------- |
-| `page`      | `/api/productos?page=2`               | Página de resultados.       |
-| `categoria` | `/api/productos?categoria=Componente` | Filtra por categoría.       |
-| `buscar`    | `/api/productos?buscar=Ryzen`         | Busca productos por nombre. |
-
-Los parámetros pueden combinarse.
-
-### Ejemplo
-
-```text
-GET /api/productos?categoria=Componente&buscar=Ryzen&page=1
-```
-
-### Respuesta
-
-```json
-{
-  "ok": true,
-  "pagina": 1,
-  "totalPaginas": 1,
-  "totalProductos": 3,
-  "cantidad": 3,
-  "productos": [
-    {
-      "id": 6,
-      "nombre": "Ryzen 7 7700",
-      "categoria": "Componente",
-      "marca": "AMD",
-      "precio": 140000,
-      "stock": 2,
-      "activo": true,
-      "imagen": "imagen.jpg"
-    }
-  ]
-}
-```
+- Nicolás Ezequiel Bainer
+- Lucía Cichelli
 
 ---
 
-# Ventas
+# 📌 Descripción
 
-| Método | Endpoint          | Descripción                                                                             |
-| ------ | ----------------- | --------------------------------------------------------------------------------------- |
-| POST   | `/api/ventas`     | Registra una venta, calcula el total, crea el detalle de la venta y descuenta el stock. |
-| GET    | `/api/ventas`     | Devuelve el historial de ventas junto con los productos vendidos.                       |
-| GET    | `/api/ventas/:id` | Devuelve el detalle de una venta específica.                                            |
+La aplicación está compuesta por dos módulos:
 
-## Body esperado
+- **Frontend Cliente**
+  - Permite visualizar productos.
+  - Agregar productos al carrito.
+  - Confirmar compras.
+  - Descargar un comprobante en PDF.
+
+- **Panel de Administración**
+  - Login de administrador.
+  - Gestión completa de productos (CRUD).
+  - Activación y desactivación lógica.
+  - Carga de imágenes.
+  - API REST para productos y ventas.
+
+---
+
+# 🚀 Tecnologías utilizadas
+
+## Backend
+
+- Node.js
+- Express.js
+- Prisma ORM
+- PostgreSQL (Supabase)
+- Express Session
+- Multer
+- bcrypt
+
+## Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+- Fetch API
+- jsPDF
+
+---
+
+# 📂 Estructura del proyecto
+
+```
+.
+├── config/
+├── controllers/
+├── frontend/
+├── middlewares/
+├── prisma/
+├── public/
+├── routes/
+├── src/
+├── views/
+├── app.js
+└── package.json
+```
+
+---
+
+# ⚙️ Instalación
+
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/NEBainer/BainerCichelli.TP.git
+```
+
+## 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+## 3. Configurar las variables de entorno
+
+Crear un archivo `.env`
+
+Ejemplo:
+
+```env
+DATABASE_URL="postgresql://usuario:password@host:5432/database"
+SESSION_SECRET="programacion3tp"
+```
+
+---
+
+## 4. Generar Prisma
+
+```bash
+npx prisma generate
+```
+
+---
+
+## 5. Ejecutar el proyecto
+
+```bash
+npm start
+```
+
+o
+
+```bash
+npm run dev
+```
+
+---
+
+# 🔐 Acceso al panel administrador
+
+```
+http://localhost:3000/login
+```
+
+El login incluye un botón de **Acceso rápido** que autocompleta las credenciales para facilitar las pruebas.
+
+---
+
+# 🌐 Frontend Cliente
+
+```
+http://localhost:3000/frontend/index.html
+```
+
+---
+
+# 📦 Funcionalidades
+
+## Cliente
+
+- Pantalla de bienvenida
+- Cambio de tema (Claro/Oscuro)
+- Visualización de productos
+- Filtrado por categorías
+- Paginación
+- Carrito de compras
+- Confirmación mediante modal
+- Ticket de compra
+- Descarga de PDF
+
+---
+
+## Administrador
+
+- Login
+- CRUD de productos
+- Subida de imágenes
+- Validaciones
+- Baja lógica
+- Reactivación de productos
+
+---
+
+# 🔌 API REST
+
+## Productos
+
+| Método | Endpoint | Descripción |
+|---------|----------|-------------|
+| GET | `/api/productos` | Obtiene los productos |
+| GET | `/api/productos/:id` | Obtiene un producto |
+
+### Parámetros
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| categoria | Filtra por categoría |
+| buscar | Busca por nombre |
+| page | Paginación |
+
+Ejemplo:
+
+```
+GET /api/productos?categoria=Componente&page=2
+```
+
+---
+
+## Ventas
+
+| Método | Endpoint |
+|---------|----------|
+| POST | `/api/ventas` |
+| GET | `/api/ventas` |
+| GET | `/api/ventas/:id` |
+
+Ejemplo:
 
 ```json
 {
@@ -70,86 +206,44 @@ GET /api/productos?categoria=Componente&buscar=Ryzen&page=1
     {
       "id": 5,
       "cantidad": 2
-    },
-    {
-      "id": 7,
-      "cantidad": 1
     }
   ]
 }
 ```
 
-## Respuesta exitosa
+---
 
-```json
-{
-  "ok": true,
-  "mensaje": "Venta registrada correctamente.",
-  "venta": {
-    "id": 1,
-    "cliente": "Juan Perez",
-    "fecha": "2026-06-27T22:00:00.000Z",
-    "total": 365000
-  }
-}
-```
+## Usuarios
 
-### Historial de ventas
+| Método | Endpoint |
+|---------|----------|
+| POST | `/api/usuarios` |
 
-```text
-GET /api/ventas
-```
-
-Respuesta:
-
-```json
-{
-  "ok": true,
-  "cantidad": 1,
-  "ventas": [
-    {
-      "id": 1,
-      "cliente": "Juan Perez",
-      "fecha": "2026-06-27T22:00:00.000Z",
-      "total": 365000,
-      "productos": [
-        {
-          "cantidad": 2,
-          "producto": {
-            "id": 5,
-            "nombre": "Ryzen 7 7700",
-            "marca": "AMD",
-            "precio": 140000
-          }
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Detalle de una venta
-
-```text
-GET /api/ventas/1
-```
-
-Devuelve una única venta con todos sus productos asociados.
+Permite crear un usuario administrador con contraseña encriptada mediante **bcrypt**.
 
 ---
 
-# Usuarios
+# 📋 Características implementadas
 
-| Método | Endpoint        | Descripción                                                              |
-| ------ | --------------- | ------------------------------------------------------------------------ |
-| POST   | `/api/usuarios` | Crea un usuario administrador con contraseña encriptada mediante bcrypt. |
+- Arquitectura MVC
+- API REST
+- Prisma ORM
+- PostgreSQL
+- Autenticación mediante sesiones
+- Contraseñas encriptadas
+- Middlewares de validación
+- Carga de imágenes con Multer
+- Baja lógica de productos
+- Gestión de stock
+- Ticket de compra en PDF
+- Diseño responsive
+- Modo claro / oscuro
+- Paginación de productos
 
 ---
 
-# Autenticación
+# 📚 Trabajo Práctico
 
-| Método | Endpoint  | Descripción                                |
-| ------ | --------- | ------------------------------------------ |
-| GET    | `/login`  | Muestra el formulario de inicio de sesión. |
-| POST   | `/login`  | Valida las credenciales del administrador. |
-| GET    | `/logout` | Finaliza la sesión del administrador.      |
+Trabajo Práctico Integrador correspondiente a la materia **Programación III**.
+
+Universidad Tecnológica Nacional (UTN).
