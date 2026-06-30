@@ -196,7 +196,7 @@
     let todosLosProductos = [];
 
     function cargarProductos() {
-      fetch('/api/productos')
+      fetch('/api/productos', { cache: 'no-store' })
         .then(r => r.json())
         .then(data => {
           todosLosProductos = data.productos || data;
@@ -206,6 +206,7 @@
           console.error("Error al cargar productos:", error);
         });
     }
+        
 
     function productosFiltrados() {
       if (categoriaActual === 'todos') return todosLosProductos;
