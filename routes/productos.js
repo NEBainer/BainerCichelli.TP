@@ -11,10 +11,10 @@ router.use(verificarSesion);
 router.get('/', listarProductos);
 
 router.get('/crear', mostrarFormCrear);
-router.post("/crear",validarProducto,upload.single("imagen"),crearProducto);
+router.post("/crear",upload.single("imagen"),validarProducto,crearProducto);
 
 router.get('/editar/:id', mostrarFormEditar);
-router.post('/editar/:id',validarProducto, upload.single('imagen'), actualizarProducto);
+router.post('/editar/:id',upload.single('imagen'), validarProducto , actualizarProducto);
 
 router.post('/eliminar/:id', eliminarProducto);
 router.post('/activar/:id', activarProducto);
