@@ -117,7 +117,7 @@
       minute:'2-digit'
     });
 
-    document.getElementById('ticket-nombre').textContent = venta.nombreCliente;
+    document.getElementById('ticket-nombre').textContent = venta.cliente;
     document.getElementById('ticket-fecha').textContent  = fechaFormateada;
     document.getElementById('ticket-id').textContent     = '#' + String(venta.id).padStart(6, '0');
     document.getElementById('ticket-total').textContent  = '$' + venta.total.toLocaleString();
@@ -173,7 +173,7 @@
       doc.setFontSize(9);
       doc.setTextColor(241, 245, 249);
       doc.setFont('helvetica', 'bold');
-      doc.text(`Cliente: ${venta.nombreCliente}`, margin + 4, y + 15);
+      doc.text(`Cliente: ${venta.cliente}`, margin + 4, y + 15);
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);

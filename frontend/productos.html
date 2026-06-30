@@ -162,7 +162,7 @@
       container.innerHTML = carrito.map(item => `
         <div class="cart-item">
           <div class="cart-item__img" style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--bg-card-alt)">
-            ${item.imagen ? `<img src="${item.imagen}" style="width:44px;height:44px;object-fit:cover;border-radius:6px">` : '📦'}
+            ${item.imagen ? `<img src="/images/${item.imagen}" style="width:44px;height:44px;object-fit:cover;border-radius:6px">` : '📦'}
           </div>
           <div class="cart-item__info">
             <div class="cart-item__name">${item.nombre}</div>
@@ -181,37 +181,21 @@
     let categoriaActual = 'todos';
     let todosLosProductos = [];
 
-    const productosDemo = [
-      { id:1, nombre:'Teclado Mecánico RGB',    precio:35000, tipo:'periferico',  descripcion:'Switch Blue, retroiluminación RGB por tecla', imagen:'' },
-      { id:2, nombre:'Mouse Gamer 16000 DPI',   precio:22000, tipo:'periferico',  descripcion:'Sensor óptico, 7 botones programables',        imagen:'' },
-      { id:3, nombre:'Auriculares 7.1 Virtual', precio:28000, tipo:'periferico',  descripcion:'Sonido envolvente, micrófono retráctil',        imagen:'' },
-      { id:4, nombre:'Monitor 144Hz 24"',       precio:95000, tipo:'periferico',  descripcion:'Full HD, 1ms, panel IPS, FreeSync',             imagen:'' },
-      { id:5, nombre:'Webcam 1080p 60fps',      precio:18000, tipo:'periferico',  descripcion:'Autoenfoque, corrección de luz',                imagen:'' },
-      { id:6, nombre:'Mousepad XL RGB',         precio:9000,  tipo:'periferico',  descripcion:'90x40cm, base antideslizante',                  imagen:'' },
-      { id:7, nombre:'Procesador Ryzen 5 5600', precio:85000, tipo:'componente',  descripcion:'6 núcleos, 12 hilos, hasta 4.4GHz',             imagen:'' },
-      { id:8, nombre:'RAM DDR4 16GB 3200MHz',   precio:32000, tipo:'componente',  descripcion:'Kit 2x8GB, CL16, disipador incluido',           imagen:'' },
-      { id:9, nombre:'SSD NVMe 1TB',            precio:48000, tipo:'componente',  descripcion:'3500MB/s lectura, M.2 PCIe 3.0',               imagen:'' },
-      { id:10,nombre:'GPU RX 6600 8GB',         precio:180000,tipo:'componente',  descripcion:'RDNA2, 8GB GDDR6, Ray Tracing',                 imagen:'' },
-      { id:11,nombre:'Fuente 650W 80+ Bronze',  precio:38000, tipo:'componente',  descripcion:'Modular, protección contra sobrecarga',         imagen:'' },
-      { id:12,nombre:'Cooler CPU 120mm',        precio:14000, tipo:'componente',  descripcion:'3 heatpipes, ventilador PWM silencioso',        imagen:'' },
-    ];
-
     function cargarProductos() {
-      fetch('/api/productos?activo=true')
+      fetch('/api/productos')
         .then(r => r.json())
         .then(data => {
           todosLosProductos = data.productos || data;
           renderizarProductos();
         })
-        .catch(() => {
-          todosLosProductos = productosDemo;
-          renderizarProductos();
+        .catch(error => {
+          console.error("Error al cargar productos:", error);
         });
     }
 
     function productosFiltrados() {
       if (categoriaActual === 'todos') return todosLosProductos;
-      return todosLosProductos.filter(p => p.tipo === categoriaActual);
+      return todosLosProductos.filter(p => p.categoria.toLowerCase() === categoriaActual);
     }
 
     function renderizarProductos() {
@@ -236,11 +220,17 @@
 
       grid.innerHTML = pagina.map(p => {
         const qty = getCantidadEnCarrito(p.id);
+
         const imgHtml = p.imagen
-          ? `<img src="/images/${p.imagen}" class="product-card__img" alt="${p.nombre}">`
-          : `<div class="product-card__img-placeholder">${p.tipo === 'periferico' ? '⌨️' : '🔧'}</div>`;
-        const badgeClass = p.tipo === 'periferico' ? 'badge-periferico' : 'badge-componente';
-        const badgeLabel = p.tipo === 'periferico' ? 'Periférico' : 'Componente';
+            ? `<img src="/images/${p.imagen}" class="product-card__img" alt="${p.nombre}">`
+            : `<div class="product-card__img-placeholder">📦</div>`;
+
+        const badgeClass =
+            p.categoria === "Periferico"
+                ? "badge-periferico"
+                : "badge-componente";
+
+        const badgeLabel = p.categoria;
 
         return `
           <div class="product-card">

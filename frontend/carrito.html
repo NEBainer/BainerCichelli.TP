@@ -228,12 +228,10 @@
       document.getElementById('modal-procesando').classList.add('open');
 
       const body = {
-        nombreCliente: clienteNombre,
-        total: calcularTotal(),
+        cliente: clienteNombre,
         productos: carrito.map(i => ({
-          productoId: i.id,
-          cantidad:   i.cantidad,
-          precioUnit: i.precio
+          id: i.id,
+          cantidad: i.cantidad
         }))
       };
 
@@ -244,30 +242,37 @@
           body:    JSON.stringify(body)
         });
 
-        if (!res.ok) throw new Error('Error en el servidor');
-        const venta = await res.json();
+        if (!res.ok) {
+            const error = await res.json();
+            console.log(error);
+            throw new Error(error.mensaje);
+        }
+        const respuesta = await res.json();
 
-        localStorage.setItem('ultimaVenta', JSON.stringify({
-          ...venta,
-          nombreCliente: clienteNombre,
-          productos: carrito,
-          total: calcularTotal(),
-          fecha: new Date().toISOString()
-        }));
+        localStorage.setItem(
+          "ultimaVenta",
+          JSON.stringify({
+            id: respuesta.venta.id,
+            cliente: respuesta.venta.cliente,
+            fecha: respuesta.venta.fecha,
+            total: respuesta.venta.total,
+            productos: carrito
+          })
+        );
+      } catch (error) {
 
-      } catch {
-        localStorage.setItem('ultimaVenta', JSON.stringify({
-          id: Date.now(),
-          nombreCliente: clienteNombre,
-          productos: carrito,
-          total: calcularTotal(),
-          fecha: new Date().toISOString()
-        }));
+          console.error(error);
+
+          document.getElementById('modal-procesando').classList.remove('open');
+
+          alert(error.message);
+
+          return;
       }
 
       localStorage.removeItem('carrito');
       window.location.href = 'ticket.html';
-    }
+          }
 
     renderizar();
   </script>
