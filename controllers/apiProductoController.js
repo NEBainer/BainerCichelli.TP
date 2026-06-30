@@ -5,16 +5,14 @@ export const obtenerProductos = async (req, res) => {
   try {
 
     const {
-      categoria,
-      buscar,
-      page = 1
+    categoria,
+    buscar,
+    page
     } = req.query;
 
     const PRODUCTOS_POR_PAGINA = 6;
 
-    const pagina = parseInt(page);
-
-    const skip = (pagina - 1) * PRODUCTOS_POR_PAGINA;
+    const pagina = page ? parseInt(page) : null;
 
     const where = {
       activo: true
@@ -31,14 +29,19 @@ export const obtenerProductos = async (req, res) => {
         };
     }
 
-    const productos = await prisma.producto.findMany({
-      where,
-      orderBy: {
-        createdAt: "desc"
-      },
-      skip,
-      take: PRODUCTOS_POR_PAGINA
-    });
+    const opcionesConsulta = {
+        where,
+        orderBy: {
+            createdAt: "desc"
+        }
+    };
+
+    if (pagina) {
+        opcionesConsulta.skip = (pagina - 1) * PRODUCTOS_POR_PAGINA;
+        opcionesConsulta.take = PRODUCTOS_POR_PAGINA;
+    }
+
+    const productos = await prisma.producto.findMany(opcionesConsulta);
 
     const totalProductos = await prisma.producto.count({
         where
@@ -50,8 +53,10 @@ export const obtenerProductos = async (req, res) => {
 
     res.json({
         ok: true,
-        pagina,
-        totalPaginas,
+        pagina: pagina || 1,
+        totalPaginas: pagina
+            ? totalPaginas
+            : 1,
         totalProductos,
         cantidad: productos.length,
         productos
