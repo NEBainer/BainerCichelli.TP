@@ -135,10 +135,24 @@
     }
 
     function cambiarCantidad(id, delta) {
-      const item = carrito.find(i => i.id === id);
-      if (!item) return;
+      let item = carrito.find(i => i.id === id);
+
+      if (!item) {
+        if (delta <= 0) return;
+        const producto = todosLosProductos.find(p => p.id === id);
+        if (!producto) return;
+        item = { ...producto, cantidad: 0 };
+        carrito.push(item);
+      }
+
       item.cantidad += delta;
       if (item.cantidad <= 0) carrito = carrito.filter(i => i.id !== id);
+      guardarCarrito();
+      renderizarProductos();
+    }
+
+    function eliminarDelCarrito(id) {
+      carrito = carrito.filter(i => i.id !== id);
       guardarCarrito();
       renderizarProductos();
     }
@@ -168,7 +182,7 @@
             <div class="cart-item__name">${item.nombre}</div>
             <div class="cart-item__price">x${item.cantidad} — $${(item.precio * item.cantidad).toLocaleString()}</div>
           </div>
-          <button class="cart-item__remove" onclick="cambiarCantidad(${item.id}, -1)">✕</button>
+          <button class="cart-item__remove" onclick="eliminarDelCarrito(${item.id})">✕</button>
         </div>
       `).join('');
 

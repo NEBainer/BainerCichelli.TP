@@ -196,7 +196,7 @@
 
       venta.productos.forEach(item => {
         doc.setFontSize(9);
-        doc.setTextColor(241, 245, 249);
+        doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'normal');
         doc.text(`${item.nombre}`, margin, y);
 
@@ -204,7 +204,7 @@
         doc.setFontSize(8);
         doc.text(`x${item.cantidad}`, margin + 95, y, { align: 'right' });
 
-        doc.setTextColor(0, 229, 255);
+        doc.setTextColor(2, 132, 199);
         doc.setFont('helvetica', 'bold');
         doc.text(`$${(item.precio * item.cantidad).toLocaleString()}`, pageW - margin, y, { align: 'right' });
 
