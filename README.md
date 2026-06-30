@@ -1,5 +1,5 @@
 # 🛒GigaShop
-![Vista principal](C:\Users\ezzeb\OneDrive\Desktop\Cositas\UTN\BainerCichelli.TP\screen.png)
+![Vista principal](screen.png)
 
 Sistema de gestión para un autoservicio de productos tecnológicos desarrollado como Trabajo Práctico Integrador para **Programación III**.
 
