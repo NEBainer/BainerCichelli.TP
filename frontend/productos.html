@@ -23,7 +23,14 @@
         <a href="carrito.html" class="cart-btn">
           🛒 Carrito <span class="cart-count" id="nav-cart-count">0</span>
         </a>
-        <span class="navbar__credits">Bainer & Cichelli</span>
+        <span id="cliente-navbar" class="navbar__user"></span>
+
+        <button
+          class="btn btn-secondary btn-sm"
+          onclick="cambiarCliente()"
+        >
+          Cambiar usuario
+        </button>
         <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
       </div>
     </div>
@@ -34,11 +41,12 @@
     <div class="page-header">
       <div>
         <div class="page-header__title" id="saludo">Productos</div>
-        <div class="page-header__sub">Elegí tus productos y agregálos al carrito</div>
+        <div
+          class="page-header__sub"
+          id="cantidad-productos">
+          Elegí tus productos y agregálos al carrito
+        </div>
       </div>
-      <a href="carrito.html" class="btn btn-primary">
-        🛒 Ver carrito (<span id="header-cart-count">0</span>)
-      </a>
     </div>
 
     <div class="category-tabs">
@@ -70,6 +78,11 @@
           </div>
           <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
             <a href="carrito.html" class="btn btn-primary btn-block">Ver carrito completo</a>
+            <button
+              class="btn btn-secondary btn-block"
+              onclick="vaciarCarrito()">
+              🗑️Vaciar carrito
+            </button>
           </div>
         </div>
       </div>
@@ -105,6 +118,7 @@
     const clienteNombre = localStorage.getItem('clienteNombre');
     if (!clienteNombre) window.location.href = 'index.html';
     document.getElementById('saludo').textContent = `Hola, ${clienteNombre} 👋`;
+    document.getElementById('cliente-navbar').textContent =`👤 ${clienteNombre}`;
 
     let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
@@ -117,36 +131,89 @@
     function actualizarContadores() {
       const total = carrito.reduce((s, i) => s + i.cantidad, 0);
       document.getElementById('nav-cart-count').textContent = total;
-      document.getElementById('header-cart-count').textContent = total;
       document.getElementById('sidebar-cart-count').textContent = total;
     }
 
     function agregarAlCarrito(producto) {
       const existe = carrito.find(i => i.id === producto.id);
       if (existe) {
+
+        if (existe.cantidad >= producto.stock) {
+          alert(`Solo hay ${producto.stock} unidades disponibles`);
+          return;
+        }
+
         existe.cantidad++;
+
       } else {
-        carrito.push({ ...producto, cantidad: 1 });
+
+        if (producto.stock <= 0) {
+          alert("Producto sin stock");
+          return;
+        }
+
+        carrito.push({
+          ...producto,
+          cantidad: 1
+        });
       }
       guardarCarrito();
+      renderizarProductos();
       document.getElementById('modal-agregado-texto').textContent =
         `${producto.nombre} fue agregado al carrito.`;
       abrirModal('modal-agregado');
     }
 
+    function vaciarCarrito() {
+
+      if(!confirm("¿Vaciar carrito?"))
+        return;
+
+      carrito = [];
+
+      guardarCarrito();
+
+      renderizarProductos();
+    }
+
     function cambiarCantidad(id, delta) {
+
       let item = carrito.find(i => i.id === id);
 
       if (!item) {
+
         if (delta <= 0) return;
+
         const producto = todosLosProductos.find(p => p.id === id);
+
         if (!producto) return;
-        item = { ...producto, cantidad: 0 };
+
+        if (producto.stock <= 0) {
+          alert("Producto sin stock");
+          return;
+        }
+
+        item = {
+          ...producto,
+          cantidad: 0
+        };
+
         carrito.push(item);
       }
 
-      item.cantidad += delta;
-      if (item.cantidad <= 0) carrito = carrito.filter(i => i.id !== id);
+      const nuevaCantidad = item.cantidad + delta;
+
+      if (nuevaCantidad > item.stock) {
+        alert(`Solo hay ${item.stock} unidades disponibles`);
+        return;
+      }
+
+      item.cantidad = nuevaCantidad;
+
+      if (item.cantidad <= 0) {
+        carrito = carrito.filter(i => i.id !== id);
+      }
+
       guardarCarrito();
       renderizarProductos();
     }
@@ -195,26 +262,35 @@
     let categoriaActual = 'todos';
     let todosLosProductos = [];
 
+    function productosFiltrados() {
+      if (categoriaActual === 'todos') return todosLosProductos;
+      return todosLosProductos.filter(p => p.categoria.toLowerCase() === categoriaActual);
+    }
+
     function cargarProductos() {
       fetch('/api/productos', { cache: 'no-store' })
         .then(r => r.json())
         .then(data => {
+
+          console.log("DATA:", data);
+
           todosLosProductos = data.productos || data;
+
+          console.log("PRODUCTOS:", todosLosProductos);
+
           renderizarProductos();
         })
         .catch(error => {
           console.error("Error al cargar productos:", error);
         });
     }
-        
-
-    function productosFiltrados() {
-      if (categoriaActual === 'todos') return todosLosProductos;
-      return todosLosProductos.filter(p => p.categoria.toLowerCase() === categoriaActual);
-    }
 
     function renderizarProductos() {
       const filtrados = productosFiltrados();
+      document.getElementById(
+        'cantidad-productos'
+      ).textContent =
+        `${filtrados.length} productos disponibles`;
       const totalPaginas = Math.ceil(filtrados.length / PRODUCTOS_POR_PAGINA);
       if (paginaActual > totalPaginas) paginaActual = 1;
 
@@ -247,6 +323,11 @@
 
         const badgeLabel = p.categoria;
 
+        const stockHtml =
+          p.stock > 0
+            ? `<div class="stock-ok">Stock: ${p.stock}</div>`
+            : `<div class="stock-empty">Sin stock</div>`;
+
         return `
           <div class="product-card">
             ${imgHtml}
@@ -255,16 +336,41 @@
               <div class="product-card__name">${p.nombre}</div>
               <div class="product-card__desc">${p.descripcion || ''}</div>
               <div class="product-card__price">$${p.precio.toLocaleString()}</div>
+              ${stockHtml}
             </div>
             <div class="product-card__footer">
-              <div class="qty-control">
-                <button class="qty-btn" onclick="cambiarCantidad(${p.id}, -1)" ${qty === 0 ? 'disabled style="opacity:0.3"' : ''}>−</button>
-                <span class="qty-num">${qty}</span>
-                <button class="qty-btn" onclick="cambiarCantidad(${p.id}, 1)">+</button>
-              </div>
-              <button class="btn btn-primary btn-sm" onclick='agregarAlCarrito(${JSON.stringify(p)})'>
-                + Agregar
-              </button>
+
+              ${
+                qty === 0
+                  ? `
+                    <button
+                      class="btn btn-primary btn-sm"
+                      ${p.stock === 0 ? 'disabled' : ''}
+                      onclick='agregarAlCarrito(${JSON.stringify(p)})'>
+                      + Agregar
+                    </button>
+                  `
+                  : `
+                    <div class="qty-control">
+                      <button
+                        class="qty-btn"
+                        onclick="cambiarCantidad(${p.id}, -1)">
+                        −
+                      </button>
+
+                      <span class="qty-num">${qty}</span>
+
+                      <button
+                        class="qty-btn"
+                        onclick="cambiarCantidad(${p.id}, 1)"
+                        ${qty >= p.stock ? 'disabled style="opacity:0.3"' : ''}>
+                        +
+                      </button>
+                    </div>
+                  `
+              }
+
+            </div>
             </div>
           </div>`;
       }).join('');
@@ -296,6 +402,16 @@
       document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
       renderizarProductos();
+    }
+
+    function cambiarCliente() {
+
+      if(confirm("¿Deseás cambiar de usuario?")) {
+
+        localStorage.removeItem("clienteNombre");
+
+        window.location.href = "index.html";
+      }
     }
 
     function abrirModal(id) {
