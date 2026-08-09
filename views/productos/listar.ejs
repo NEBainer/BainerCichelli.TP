@@ -1,9 +1,9 @@
 <%- include('../partials/header') %>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>📦 Lista de Productos</h1>
+    <h1><i class="fa-solid fa-desktop"></i> Lista de Productos</h1>
     <a href="/productos/crear" class="btn btn-success">
-        ➕ Nuevo Producto
+        <i class="fa-solid fa-square-plus"></i>Nuevo Producto
     </a>
 </div>
 
@@ -63,7 +63,7 @@
 
                         <a href="/productos/editar/<%= producto.id %>"
                         class="btn btn-warning btn-sm flex-fill">
-                            ✏️ Editar
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
                         </a>
 
                         <% if (producto.activo) { %>
@@ -78,7 +78,7 @@
                                     type="submit"
                                     class="btn btn-danger btn-sm w-100">
 
-                                    🗑️ Desactivar
+                                    <i class="fa-solid fa-toggle-off"></i> Desactivar
 
                                 </button>
 
@@ -96,7 +96,7 @@
                                     type="submit"
                                     class="btn btn-success btn-sm w-100">
 
-                                    🔄 Activar
+                                    <i class="fa-solid fa-toggle-on"></i> Activar
 
                                 </button>
 

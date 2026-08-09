@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= typeof title !== 'undefined' ? title + ' — GigaShop' : 'GigaShop Admin' %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
@@ -14,23 +15,23 @@
   <div class="container">
 
     <a href="/" class="navbar-brand">
-      <div class="brand-icon">⚡</div>
+      <div class="brand-icon"><i class="fa-solid fa-bolt"></i></div>
       GIGASHOP
       <span class="nav-badge">ADMIN</span>
     </a>
 
     <div class="navbar-nav">
-      <a href="/" class="nav-link">Inicio</a>
-      <a href="/productos" class="nav-link">Productos</a>
-      <a href="/productos/crear" class="nav-link">+ Agregar</a>
-      <a href="/logout" class="nav-link">Cerrar sesión</a>
+      <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="/productos" class="nav-link"><i class="fa-solid fa-box-open"></i> Productos</a>
+      <a href="/productos/crear" class="nav-link"><i class="fa-solid fa-square-plus"></i> Agregar</a>
+      <a href="/logout" class="nav-link"> <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a>
 
       <button
         onclick="toggleTheme()"
         id="theme-toggle"
         class="btn btn-secondary btn-sm">
 
-        ☀️ Modo claro
+        <i class="fa-regular fa-sun"></i> Modo claro
 
       </button>
     </div>

@@ -24,7 +24,7 @@
     const btn = document.getElementById('theme-toggle');
     if (!btn) return;
     const isDark = root.getAttribute('data-theme') === 'dark';
-    btn.textContent = isDark ? '☀️ Modo claro' : '🌙 Modo oscuro';
+    btn.innerHTML = isDark ? '<i class="fa-regular fa-sun"></i> Modo claro' : '<i class="fa-solid fa-moon"></i> Modo oscuro';
   }
 
   updateThemeBtn();

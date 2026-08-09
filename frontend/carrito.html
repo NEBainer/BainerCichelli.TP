@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigaShop — Carrito</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,20 +12,55 @@
 
   <nav class="navbar">
     <div class="navbar__inner">
+
       <a href="index.html" class="navbar__logo">
-        <div class="navbar__logo-icon">⚡</div>
+        <div class="navbar__logo-icon">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+
         <div>
           GigaShop
-          <span class="navbar__tagline">Periféricos & Componentes</span>
+          <span class="navbar__tagline">
+            Periféricos & Componentes
+          </span>
         </div>
       </a>
+
       <div class="navbar__nav">
-        <a href="productos.html" class="navbar__link">Productos</a>
-        <a href="carrito.html" class="cart-btn active">
-          🛒 Carrito <span class="cart-count" id="nav-cart-count">0</span>
+
+        <a href="productos.html" class="navbar__link">
+          <i class="fa-solid fa-desktop"></i>
+          Productos
         </a>
-        <span class="navbar__credits">Bainer & Cichelli</span>
-        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+
+        <a href="carrito.html" class="cart-btn active">
+          <i class="fa-solid fa-cart-shopping"></i>
+          Carrito
+          <span
+            class="cart-count"
+            id="nav-cart-count">
+            0
+          </span>
+        </a>
+
+        <span
+          id="cliente-navbar"
+          class="navbar__user">
+        </span>
+
+        <button
+          class="btn btn-secondary btn-sm"
+          onclick="cambiarCliente()">
+          <i class="fa-solid fa-right-left"></i>
+          Cambiar usuario
+        </button>
+
+        <button
+          class="theme-toggle"
+          onclick="toggleTheme()">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
       </div>
     </div>
   </nav>
@@ -33,10 +69,10 @@
 
     <div class="page-header">
       <div>
-        <div class="page-header__title">Tu carrito</div>
+        <div class="page-header__title">Tu carrito<i class="fa-solid fa-cart-shopping"></i></div>
         <div class="page-header__sub" id="subtitulo-carrito">Revisá tu pedido antes de confirmar</div>
       </div>
-      <a href="productos.html" class="btn btn-secondary">← Seguir comprando</a>
+
     </div>
 
     <div class="cart-page" id="cart-page">
@@ -62,10 +98,10 @@
 
         <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem;">
           <button class="btn btn-primary btn-block btn-lg" onclick="abrirModalConfirmar()">
-            ✅ Confirmar compra
+            <i class="fa-solid fa-circle-check"></i> Confirmar compra
           </button>
           <a href="productos.html" class="btn btn-secondary btn-block">
-            ← Seguir comprando
+            <i class="fa-solid fa-arrow-left"></i> Seguir comprando
           </a>
         </div>
       </div>
@@ -73,7 +109,7 @@
     </div>
 
     <div class="empty-state" id="empty-state" style="display:none">
-      <div class="empty-state__icon">🛒</div>
+      <div class="empty-state__icon"><i class="fa-solid fa-cart-shopping"></i></div>
       <div class="empty-state__title">Tu carrito está vacío</div>
       <div class="empty-state__desc" style="margin-bottom:1.5rem">Agregá productos para continuar</div>
       <a href="productos.html" class="btn btn-primary">Ver productos</a>
@@ -83,7 +119,7 @@
 
   <div class="modal-overlay" id="modal-confirmar">
     <div class="modal">
-      <div class="modal__icon">🛒</div>
+      <div class="modal__icon"><i class="fa-solid fa-cart-shopping"></i></div>
       <div class="modal__title">¿Confirmás la compra?</div>
       <div class="modal__body" id="modal-confirmar-body">
         Estás por comprar <strong id="modal-cantidad"></strong> producto(s) por un total de <strong id="modal-total"></strong>.
@@ -106,19 +142,20 @@
   <script>
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    document.querySelector('.theme-toggle').innerHTML = savedTheme === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
     const clienteNombre = localStorage.getItem('clienteNombre');
     if (!clienteNombre) window.location.href = 'index.html';
     document.getElementById('resumen-nombre').textContent = clienteNombre;
+    document.getElementById('cliente-navbar').innerHTML =`<i class="fa-solid fa-user"></i> ${clienteNombre}`;
 
     let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
@@ -128,10 +165,24 @@
     }
 
     function cambiarCantidad(id, delta) {
+
       const item = carrito.find(i => i.id === id);
+
       if (!item) return;
-      item.cantidad += delta;
-      if (item.cantidad <= 0) carrito = carrito.filter(i => i.id !== id);
+
+      const nuevaCantidad = item.cantidad + delta;
+
+      if (nuevaCantidad > item.stock) {
+        alert(`Solo hay ${item.stock} unidades disponibles`);
+        return;
+      }
+
+      item.cantidad = nuevaCantidad;
+
+      if (item.cantidad <= 0) {
+        carrito = carrito.filter(i => i.id !== id);
+      }
+
       guardarCarrito();
     }
 
@@ -189,14 +240,19 @@
             <div class="qty-control" style="justify-content:center">
               <button class="qty-btn" onclick="cambiarCantidad(${item.id}, -1)">−</button>
               <span class="qty-num">${item.cantidad}</span>
-              <button class="qty-btn" onclick="cambiarCantidad(${item.id}, 1)">+</button>
+              <button
+                class="qty-btn"
+                onclick="cambiarCantidad(${item.id}, 1)"
+                ${item.cantidad >= item.stock ? 'disabled style="opacity:0.3"' : ''}>
+                +
+              </button>
             </div>
 
             <div class="cart-table__subtotal">
               $${(item.precio * item.cantidad).toLocaleString()}
             </div>
 
-            <button class="btn btn-danger btn-sm" onclick="eliminarItem(${item.id})">🗑</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarItem(${item.id})"><i class="fa-solid fa-trash"></i></button>
           </div>
         `).join('')}
       `;

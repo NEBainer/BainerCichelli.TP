@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigaShop — Productos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,16 +13,20 @@
   <nav class="navbar">
     <div class="navbar__inner">
       <a href="index.html" class="navbar__logo">
-        <div class="navbar__logo-icon">⚡</div>
+        <div class="navbar__logo-icon">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
         <div>
           GigaShop
           <span class="navbar__tagline">Periféricos & Componentes</span>
         </div>
       </a>
       <div class="navbar__nav">
-        <a href="productos.html" class="navbar__link active">Productos</a>
+        <a href="productos.html" class="navbar__link active">  
+          <i class="fa-solid fa-desktop"></i>
+          Productos</a>
         <a href="carrito.html" class="cart-btn">
-          🛒 Carrito <span class="cart-count" id="nav-cart-count">0</span>
+          <i class="fa-solid fa-cart-shopping"></i>Carrito <span class="cart-count" id="nav-cart-count">0</span>
         </a>
         <span id="cliente-navbar" class="navbar__user"></span>
 
@@ -29,9 +34,10 @@
           class="btn btn-secondary btn-sm"
           onclick="cambiarCliente()"
         >
+          <i class="fa-solid fa-right-left"></i>
           Cambiar usuario
         </button>
-        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
       </div>
     </div>
   </nav>
@@ -50,9 +56,9 @@
     </div>
 
     <div class="category-tabs">
-      <button class="category-tab active" onclick="cambiarCategoria('todos', this)">Todos</button>
-      <button class="category-tab" onclick="cambiarCategoria('periferico', this)">⌨️ Periféricos</button>
-      <button class="category-tab" onclick="cambiarCategoria('componente', this)">🔧 Componentes</button>
+      <button class="category-tab active" onclick="cambiarCategoria('todos', this)"><i class="fa-solid fa-layer-group"></i> Todos</button>
+      <button class="category-tab" onclick="cambiarCategoria('periferico', this)"><i class="fa-solid fa-keyboard"></i> Periféricos</button>
+      <button class="category-tab" onclick="cambiarCategoria('componente', this)"><i class="fa-solid fa-microchip"></i> Componentes</button>
     </div>
 
     <div class="products-layout">
@@ -65,7 +71,7 @@
 
       <div class="cart-sidebar">
         <div class="cart-sidebar__title">
-          🛒 Tu carrito
+          <i class="fa-solid fa-cart-shopping"></i>Tu carrito
           <span class="cart-count" id="sidebar-cart-count">0</span>
         </div>
         <div id="cart-sidebar-items">
@@ -81,7 +87,7 @@
             <button
               class="btn btn-secondary btn-block"
               onclick="vaciarCarrito()">
-              🗑️Vaciar carrito
+              <i class="fa-solid fa-trash"></i>Vaciar carrito
             </button>
           </div>
         </div>
@@ -92,7 +98,7 @@
 
   <div class="modal-overlay" id="modal-agregado">
     <div class="modal">
-      <div class="modal__icon">✅</div>
+      <div class="modal__icon"><i class="fa-solid fa-circle-check"></i></div>
       <div class="modal__title">¡Producto agregado!</div>
       <div class="modal__body" id="modal-agregado-texto"></div>
       <div class="modal__actions">
@@ -105,20 +111,20 @@
   <script>
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    document.querySelector('.theme-toggle').innerHTML = savedTheme === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
     const clienteNombre = localStorage.getItem('clienteNombre');
     if (!clienteNombre) window.location.href = 'index.html';
-    document.getElementById('saludo').textContent = `Hola, ${clienteNombre} 👋`;
-    document.getElementById('cliente-navbar').textContent =`👤 ${clienteNombre}`;
+    document.getElementById('saludo').innerHTML = `Hola, ${clienteNombre}!`;
+    document.getElementById('cliente-navbar').innerHTML =`<i class="fa-solid fa-user"></i> ${clienteNombre}`;
 
     let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
@@ -243,13 +249,13 @@
       container.innerHTML = carrito.map(item => `
         <div class="cart-item">
           <div class="cart-item__img" style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--bg-card-alt)">
-            ${item.imagen ? `<img src="/images/${item.imagen}" style="width:44px;height:44px;object-fit:cover;border-radius:6px">` : '📦'}
+            ${item.imagen ? `<img src="/images/${item.imagen}" style="width:44px;height:44px;object-fit:cover;border-radius:6px">` : '<i class="fa-solid fa-box"></i>'}
           </div>
           <div class="cart-item__info">
             <div class="cart-item__name">${item.nombre}</div>
             <div class="cart-item__price">x${item.cantidad} — $${(item.precio * item.cantidad).toLocaleString()}</div>
           </div>
-          <button class="cart-item__remove" onclick="eliminarDelCarrito(${item.id})">✕</button>
+          <button class="cart-item__remove" onclick="eliminarDelCarrito(${item.id})"><i class="fa-solid fa-xmark"></i></button>
         </div>
       `).join('');
 
@@ -302,8 +308,8 @@
       if (pagina.length === 0) {
         grid.innerHTML = `
           <div class="empty-state" style="grid-column:1/-1">
-            <div class="empty-state__icon">📦</div>
-            <div class="empty-state__title">No hay productos en esta categoría</div>
+            <div class="empty-state__icon"><i class="fa-solid fa-face-frown"></i></div>
+            <div class="empty-state__title">No encontramos productos en esta categoría</div>
           </div>`;
         document.getElementById('pagination').innerHTML = '';
         return;
@@ -314,7 +320,7 @@
 
         const imgHtml = p.imagen
             ? `<img src="/images/${p.imagen}" class="product-card__img" alt="${p.nombre}">`
-            : `<div class="product-card__img-placeholder">📦</div>`;
+            : `<div class="product-card__img-placeholder"><i class="fa-solid fa-box"></i></div>`;
 
         const badgeClass =
             p.categoria === "Periferico"

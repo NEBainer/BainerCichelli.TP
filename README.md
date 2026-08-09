@@ -137,7 +137,7 @@ http://localhost:3000/frontend/index.html
 
 ---
 
-# 📦 Funcionalidades
+# <i class="fa-solid fa-box"></i> Funcionalidades
 
 ## Cliente
 

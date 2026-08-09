@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GigaShop — Bienvenido</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,7 +13,9 @@
   <nav class="navbar">
     <div class="navbar__inner">
       <a href="index.html" class="navbar__logo">
-        <div class="navbar__logo-icon">⚡</div>
+        <div class="navbar__logo-icon">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
         <div>
           GigaShop
           <span class="navbar__tagline">Periféricos & Componentes</span>
@@ -20,7 +23,7 @@
       </a>
       <div class="navbar__nav">
         <span class="navbar__credits">Bainer & Cichelli</span>
-        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
       </div>
     </div>
   </nav>
@@ -54,14 +57,14 @@
     /* Tema */
     const saved = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+    document.querySelector('.theme-toggle').innerHTML = saved === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
     /* Si ya hay nombre guardado, ir directo a productos */
