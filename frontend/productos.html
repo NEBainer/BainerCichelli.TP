@@ -28,12 +28,11 @@
         <a href="carrito.html" class="cart-btn">
           <i class="fa-solid fa-cart-shopping"></i>Carrito <span class="cart-count" id="nav-cart-count">0</span>
         </a>
-        <span id="cliente-navbar" class="navbar__user"></span>
+        <span id="cliente-navbar" class="navbar__pill navbar__user"></span>
 
         <button
-          class="btn btn-secondary btn-sm"
-          onclick="cambiarCliente()"
-        >
+          class="navbar__pill"
+          onclick="cambiarCliente()">
           <i class="fa-solid fa-right-left"></i>
           Cambiar usuario
         </button>
@@ -111,14 +110,20 @@
   <script>
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.querySelector('.theme-toggle').innerHTML = savedTheme === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    document.querySelector('.theme-toggle').innerHTML =
+      savedTheme === 'dark'
+        ? '<i class="fa-solid fa-moon"></i>'
+        : '<i class="fa-solid fa-sun"></i>';
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      document.querySelector('.theme-toggle').innerHTML =
+        next === 'dark'
+          ? '<i class="fa-solid fa-moon"></i>'
+          : '<i class="fa-solid fa-sun"></i>';
     }
 
     const clienteNombre = localStorage.getItem('clienteNombre');
@@ -318,6 +323,11 @@
       grid.innerHTML = pagina.map(p => {
         const qty = getCantidadEnCarrito(p.id);
 
+        const ribbonHtml =
+          p.stock === 0
+            ? `<div class="product-ribbon">SIN STOCK</div>`
+            : '';
+
         const imgHtml = p.imagen
             ? `<img src="/images/${p.imagen}" class="product-card__img" alt="${p.nombre}">`
             : `<div class="product-card__img-placeholder"><i class="fa-solid fa-box"></i></div>`;
@@ -332,30 +342,54 @@
         const stockHtml =
           p.stock > 0
             ? `<div class="stock-ok">Stock: ${p.stock}</div>`
-            : `<div class="stock-empty">Sin stock</div>`;
+            : `<div class="stock-badge stock-badge--out"><i class="fa-solid fa-triangle-exclamation"></i>Sin stock</div>`;
 
         return `
-          <div class="product-card">
+          <div class="product-card ${p.stock === 0 ? 'product-card--out' : ''}">
+
+            ${ribbonHtml}
+
             ${imgHtml}
+
             <div class="product-card__body">
-              <span class="product-card__badge ${badgeClass}">${badgeLabel}</span>
+              <span class="product-card__badge ${badgeClass}">
+                ${badgeLabel}
+              </span>
+
               <div class="product-card__name">${p.nombre}</div>
-              <div class="product-card__desc">${p.descripcion || ''}</div>
-              <div class="product-card__price">$${p.precio.toLocaleString()}</div>
+
+              <div class="product-card__desc">
+                ${p.descripcion || ''}
+              </div>
+
+              <div class="product-card__price">
+                $${p.precio.toLocaleString()}
+              </div>
+
               ${stockHtml}
             </div>
+
             <div class="product-card__footer">
 
               ${
                 qty === 0
-                  ? `
-                    <button
-                      class="btn btn-primary btn-sm"
-                      ${p.stock === 0 ? 'disabled' : ''}
-                      onclick='agregarAlCarrito(${JSON.stringify(p)})'>
-                      + Agregar
-                    </button>
-                  `
+                  ? (
+                      p.stock === 0
+                        ? `
+                          <button
+                            class="btn btn-sm btn-out-stock"
+                            disabled>
+                            Sin stock
+                          </button>
+                        `
+                        : `
+                          <button
+                            class="btn btn-primary btn-sm"
+                            onclick='agregarAlCarrito(${JSON.stringify(p)})'>
+                            + Agregar
+                          </button>
+                        `
+                    )
                   : `
                     <div class="qty-control">
                       <button
@@ -377,8 +411,9 @@
               }
 
             </div>
-            </div>
-          </div>`;
+
+          </div>
+        `;
       }).join('');
 
       renderizarPaginacion(totalPaginas);

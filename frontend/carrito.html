@@ -45,11 +45,11 @@
 
         <span
           id="cliente-navbar"
-          class="navbar__user">
+          class="navbar__pill navbar__user">
         </span>
 
         <button
-          class="btn btn-secondary btn-sm"
+          class="navbar__pill"
           onclick="cambiarCliente()">
           <i class="fa-solid fa-right-left"></i>
           Cambiar usuario
@@ -133,7 +133,7 @@
 
   <div class="modal-overlay" id="modal-procesando">
     <div class="modal">
-      <div class="modal__icon" id="procesando-icon">⏳</div>
+      <div class="modal__icon" id="procesando-icon"><i class="fa-solid fa-spinner fa-spin"></i></div>
       <div class="modal__title" id="procesando-titulo">Procesando tu compra...</div>
       <div class="modal__body" id="procesando-body">Por favor esperá un momento.</div>
     </div>
@@ -142,14 +142,20 @@
   <script>
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.querySelector('.theme-toggle').innerHTML = savedTheme === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    document.querySelector('.theme-toggle').innerHTML =
+      savedTheme === 'dark'
+        ? '<i class="fa-solid fa-moon"></i>'
+        : '<i class="fa-solid fa-sun"></i>';
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
-      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      document.querySelector('.theme-toggle').innerHTML =
+        next === 'dark'
+          ? '<i class="fa-solid fa-moon"></i>'
+          : '<i class="fa-solid fa-sun"></i>';
     }
 
     const clienteNombre = localStorage.getItem('clienteNombre');
@@ -205,16 +211,22 @@
 
       document.getElementById('nav-cart-count').textContent = cantTotal;
 
+      document.getElementById('subtitulo-carrito').textContent =
+        `${cantTotal} producto${cantTotal !== 1 ? 's' : ''} en tu carrito`;
+
       if (carrito.length === 0) {
-        document.getElementById('cart-page').style.display  = 'none';
+
+        document.getElementById('subtitulo-carrito').textContent =
+          'Agregá productos para comenzar';
+
+        document.getElementById('cart-page').style.display = 'none';
         document.getElementById('empty-state').style.display = 'block';
+
         return;
       }
 
       document.getElementById('cart-page').style.display  = 'grid';
       document.getElementById('empty-state').style.display = 'none';
-      document.getElementById('subtitulo-carrito').textContent =
-        `${cantTotal} producto${cantTotal !== 1 ? 's' : ''} en tu carrito`;
 
       document.getElementById('cart-table').innerHTML = `
         <div class="cart-table__header">
@@ -229,7 +241,7 @@
               <div class="cart-table__img" style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg-card-alt);border-radius:8px;width:52px;height:52px;flex-shrink:0">
                 ${item.imagen
                   ? `<img src="/images/${item.imagen}" style="width:52px;height:52px;object-fit:cover;border-radius:8px">`
-                  : (item.tipo === 'periferico' ? '⌨️' : '🔧')}
+                  : (item.tipo === 'periferico' ? '<i class="fa-solid fa-keyboard"></i>' : '<i class="fa-solid fa-microchip"></i>')}
               </div>
               <div>
                 <div class="cart-table__name">${item.nombre}</div>
@@ -277,6 +289,16 @@
 
     function cerrarModal(id) {
       document.getElementById(id).classList.remove('open');
+    }
+
+    function cambiarCliente() {
+
+      if (confirm("¿Deseás cambiar de usuario?")) {
+
+        localStorage.removeItem("clienteNombre");
+
+        window.location.href = "index.html";
+      }
     }
 
     async function confirmarCompra() {
