@@ -30,7 +30,7 @@
 
         <a href="productos.html" class="navbar__link">
           <i class="fa-solid fa-desktop"></i>
-          Productos
+          Productos:
         </a>
 
         <a href="carrito.html" class="cart-btn active">
@@ -89,7 +89,19 @@
           Cliente: <span id="resumen-nombre">—</span>
         </div>
 
-        <div id="resumen-items"></div>
+        <div class="cart-summary__stats">
+
+          <div class="cart-summary__stat">
+            <span>Productos:</span>
+            <strong id="resumen-productos">0</strong>
+          </div>
+
+          <div class="cart-summary__stat">
+            <span>Unidades:</span>
+            <strong id="resumen-unidades">0</strong>
+          </div>
+
+        </div>
 
         <div class="cart-summary__total">
           <span>Total</span>
@@ -299,12 +311,11 @@
         `).join('')}
       `;
 
-      document.getElementById('resumen-items').innerHTML = carrito.map(item => `
-        <div class="cart-summary__row">
-          <span>${item.nombre} x${item.cantidad}</span>
-          <span>$${(item.precio * item.cantidad).toLocaleString()}</span>
-        </div>
-      `).join('');
+      document.getElementById('resumen-productos').textContent =
+        carrito.length;
+
+      document.getElementById('resumen-unidades').textContent =
+        cantTotal;
 
       document.getElementById('resumen-total').textContent = '$' + total.toLocaleString();
     }
