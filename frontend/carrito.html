@@ -139,6 +139,36 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-cambiar-usuario">
+    <div class="modal">
+      <div class="modal__icon">
+        <i class="fa-solid fa-user"></i>
+      </div>
+
+      <div class="modal__title">
+        Cambiar usuario
+      </div>
+
+      <div class="modal__body">
+        Se cerrará la sesión actual.
+      </div>
+
+      <div class="modal__actions">
+        <button
+          class="btn btn-secondary"
+          onclick="cerrarModal('modal-cambiar-usuario')">
+          Cancelar
+        </button>
+
+        <button
+          class="btn btn-primary"
+          onclick="confirmarCambioUsuario()">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
@@ -292,13 +322,13 @@
     }
 
     function cambiarCliente() {
+      document.getElementById('modal-cambiar-usuario')
+        .classList.add('open');
+    }
 
-      if (confirm("¿Deseás cambiar de usuario?")) {
-
-        localStorage.removeItem("clienteNombre");
-
-        window.location.href = "index.html";
-      }
+    function confirmarCambioUsuario() {
+      localStorage.removeItem("clienteNombre");
+      window.location.href = "index.html";
     }
 
     async function confirmarCompra() {

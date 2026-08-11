@@ -107,6 +107,36 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="modal-confirmacion">
+    <div class="modal">
+      <div class="modal__icon modal__icon--confirm">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+
+      <div class="modal__title" id="confirm-title">
+        Confirmar acción
+      </div>
+
+      <div class="modal__body" id="confirm-body">
+        ¿Estás seguro?
+      </div>
+
+      <div class="modal__actions">
+        <button
+          class="btn btn-secondary"
+          onclick="cerrarModal('modal-confirmacion')">
+          Cancelar
+        </button>
+
+        <button
+          class="btn btn-primary"
+          id="confirm-btn">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
@@ -132,6 +162,27 @@
     document.getElementById('cliente-navbar').innerHTML =`<i class="fa-solid fa-user"></i> ${clienteNombre}`;
 
     let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+    function mostrarConfirmacion(
+      titulo,
+      mensaje,
+      callback
+    ) {
+      document.getElementById("confirm-title").textContent =
+        titulo;
+
+      document.getElementById("confirm-body").textContent =
+        mensaje;
+
+      const btn = document.getElementById("confirm-btn");
+
+      btn.onclick = () => {
+        cerrarModal("modal-confirmacion");
+        callback();
+      };
+
+      abrirModal("modal-confirmacion", false);
+    }
 
     function guardarCarrito() {
       localStorage.setItem('carrito', JSON.stringify(carrito));
@@ -177,14 +228,18 @@
 
     function vaciarCarrito() {
 
-      if(!confirm("¿Vaciar carrito?"))
-        return;
+      mostrarConfirmacion(
+        "Vaciar carrito",
+        "Se eliminarán todos los productos del carrito.",
+        () => {
 
-      carrito = [];
+          carrito = [];
 
-      guardarCarrito();
+          guardarCarrito();
 
-      renderizarProductos();
+          renderizarProductos();
+        }
+      );
     }
 
     function cambiarCantidad(id, delta) {
@@ -278,19 +333,43 @@
       return todosLosProductos.filter(p => p.categoria.toLowerCase() === categoriaActual);
     }
 
+    function mostrarSkeletons() {
+
+      document.getElementById('products-grid').innerHTML =
+        Array(6).fill(`
+          <div class="product-card skeleton-card">
+            <div class="skeleton skeleton-img"></div>
+
+            <div class="product-card__body">
+              <div class="skeleton skeleton-badge"></div>
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-title short"></div>
+              <div class="skeleton skeleton-price"></div>
+            </div>
+
+            <div class="product-card__footer">
+              <div class="skeleton skeleton-button"></div>
+            </div>
+          </div>
+        `).join('');
+    }
+
     function cargarProductos() {
+
+      mostrarSkeletons();
       fetch('/api/productos', { cache: 'no-store' })
         .then(r => r.json())
-        .then(data => {
+          .then(data => {
 
-          console.log("DATA:", data);
+            setTimeout(() => {
 
-          todosLosProductos = data.productos || data;
+              todosLosProductos = data.productos || data;
 
-          console.log("PRODUCTOS:", todosLosProductos);
+              renderizarProductos();
 
-          renderizarProductos();
-        })
+            }, 1500);
+
+          })
         .catch(error => {
           console.error("Error al cargar productos:", error);
         });
@@ -309,6 +388,7 @@
       const pagina = filtrados.slice(inicio, inicio + PRODUCTOS_POR_PAGINA);
 
       const grid = document.getElementById('products-grid');
+      
 
       if (pagina.length === 0) {
         grid.innerHTML = `
@@ -447,17 +527,28 @@
 
     function cambiarCliente() {
 
-      if(confirm("¿Deseás cambiar de usuario?")) {
+      mostrarConfirmacion(
+        "Cambiar usuario",
+        "Se cerrará la sesión actual.",
+        () => {
 
-        localStorage.removeItem("clienteNombre");
+          localStorage.removeItem("clienteNombre");
 
-        window.location.href = "index.html";
-      }
+          window.location.href = "index.html";
+        }
+      );
     }
 
-    function abrirModal(id) {
-      document.getElementById(id).classList.add('open');
-      setTimeout(() => cerrarModal(id), 2500);
+    function abrirModal(id, autoClose = true) {
+
+      document.getElementById(id)
+        .classList.add('open');
+
+      if (autoClose) {
+        setTimeout(() => {
+          cerrarModal(id);
+        }, 2500);
+      }
     }
 
     function cerrarModal(id) {
