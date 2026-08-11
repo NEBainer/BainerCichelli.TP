@@ -529,10 +529,12 @@
 
       mostrarConfirmacion(
         "Cambiar usuario",
-        "Se cerrará la sesión actual.",
+        "Se cerrará la compra actual y se vaciará el carrito para iniciar una nueva compra.",
         () => {
 
           localStorage.removeItem("clienteNombre");
+
+          localStorage.removeItem("carrito");
 
           window.location.href = "index.html";
         }

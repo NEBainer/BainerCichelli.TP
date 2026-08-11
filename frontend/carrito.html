@@ -142,7 +142,7 @@
   <div class="modal-overlay" id="modal-cambiar-usuario">
     <div class="modal">
       <div class="modal__icon">
-        <i class="fa-solid fa-user"></i>
+        <i class="fa-solid fa-users"></i>
       </div>
 
       <div class="modal__title">
@@ -150,7 +150,7 @@
       </div>
 
       <div class="modal__body">
-        Se cerrará la sesión actual.
+        Se cerrará la compra actual y se vaciará el carrito para iniciar una nueva compra.
       </div>
 
       <div class="modal__actions">
@@ -328,6 +328,7 @@
 
     function confirmarCambioUsuario() {
       localStorage.removeItem("clienteNombre");
+      localStorage.removeItem("carrito");
       window.location.href = "index.html";
     }
 
