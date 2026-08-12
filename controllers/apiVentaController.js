@@ -6,7 +6,6 @@ export const crearVenta = async (req, res) => {
 
         const { cliente, productos } = req.body;
 
-        // Buscar los productos solicitados
         const productosBD = await prisma.producto.findMany({
             where: {
                 id: {
@@ -16,7 +15,6 @@ export const crearVenta = async (req, res) => {
             }
         });
 
-        // Verificar que existan
         if (productosBD.length !== productos.length) {
             return res.status(404).json({
                 ok: false,
@@ -24,12 +22,16 @@ export const crearVenta = async (req, res) => {
             });
         }
 
-        // Verificar stock
+        // Crear mapa para búsquedas rápidas
+        const productosMap = new Map(
+            productosBD.map(producto => [producto.id, producto])
+        );
+
+        let total = 0;
+
         for (const item of productos) {
 
-            const productoBD = productosBD.find(
-                producto => producto.id === item.id
-            );
+            const productoBD = productosMap.get(item.id);
 
             if (productoBD.stock < item.cantidad) {
                 return res.status(400).json({
@@ -38,64 +40,52 @@ export const crearVenta = async (req, res) => {
                 });
             }
 
-        }
-
-        // Calcular total
-        let total = 0;
-
-        for (const item of productos) {
-
-            const productoBD = productosBD.find(
-                producto => producto.id === item.id
-            );
-
             total += productoBD.precio * item.cantidad;
 
         }
 
-        // Transacción
-        const venta = await prisma.$transaction(async (tx) => {
+        const venta = await prisma.$transaction(
+            async (tx) => {
 
-            // Crear la venta
-            const nuevaVenta = await tx.venta.create({
-                data: {
-                    cliente,
-                    total
-                }
-            });
-
-            // Crear detalle de venta
-            for (const item of productos) {
-
-                await tx.ventaProducto.create({
+                const nuevaVenta = await tx.venta.create({
                     data: {
+                        cliente,
+                        total
+                    }
+                });
+
+                // Crear todos los detalles de una sola vez
+                await tx.ventaProducto.createMany({
+                    data: productos.map(item => ({
                         ventaId: nuevaVenta.id,
                         productoId: item.id,
                         cantidad: item.cantidad
-                    }
+                    }))
                 });
 
-            }
+                // Actualizar stock
+                for (const item of productos) {
 
-            // Descontar stock
-            for (const item of productos) {
-
-                await tx.producto.update({
-                    where: {
-                        id: item.id
-                    },
-                    data: {
-                        stock: {
-                            decrement: item.cantidad
+                    await tx.producto.update({
+                        where: {
+                            id: item.id
+                        },
+                        data: {
+                            stock: {
+                                decrement: item.cantidad
+                            }
                         }
-                    }
-                });
+                    });
 
+                }
+
+                return nuevaVenta;
+
+            },
+            {
+                timeout: 20000
             }
-
-            return nuevaVenta;
-
-        });
+        );
 
         res.status(201).json({
             ok: true,
@@ -159,9 +149,7 @@ export const obtenerVentaPorId = async (req, res) => {
         const id = parseInt(req.params.id);
 
         const venta = await prisma.venta.findUnique({
-            where: {
-                id
-            },
+            where: { id },
             include: {
                 productos: {
                     include: {

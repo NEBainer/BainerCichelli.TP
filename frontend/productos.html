@@ -541,19 +541,31 @@
       );
     }
 
+    let modalTimeout = null;
+
     function abrirModal(id, autoClose = true) {
 
-      document.getElementById(id)
-        .classList.add('open');
+      document.getElementById(id).classList.add('open');
+
+      if (modalTimeout) {
+        clearTimeout(modalTimeout);
+      }
 
       if (autoClose) {
-        setTimeout(() => {
+        modalTimeout = setTimeout(() => {
           cerrarModal(id);
+          modalTimeout = null;
         }, 2500);
       }
     }
 
     function cerrarModal(id) {
+
+      if (modalTimeout) {
+        clearTimeout(modalTimeout);
+        modalTimeout = null;
+      }
+
       document.getElementById(id).classList.remove('open');
     }
 
