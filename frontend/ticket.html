@@ -143,7 +143,7 @@
 
     function descargarPDF() {
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'mm', format: 'a5' });
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
       const margin  = 15;
       const pageW   = doc.internal.pageSize.getWidth();
