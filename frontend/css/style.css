@@ -485,6 +485,116 @@ html[data-theme="light"] .theme-toggle:hover {
 
 .category-tab:hover:not(.active) { color: var(--text-1); }
 
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    color: var(--text-2);
+    cursor: pointer;
+    font-size: .9rem;
+}
+
+.filter-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
+#buscador,
+#orden-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+
+  color: var(--text-1);
+  font-size: 0.9rem;
+
+  padding: 0.75rem 1rem;
+
+  transition: all var(--transition);
+}
+
+#buscador {
+  flex: 1;
+  min-width: 250px;
+}
+
+#buscador:focus,
+#orden-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+#buscador::placeholder {
+  color: var(--text-3);
+}
+
+#orden-select {
+  cursor: pointer;
+  min-width: 220px;
+}
+
+.filters-bar label {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+#filtro-stock:hover {
+  border-color: var(--accent);
+}
+
+#filtro-stock {
+  appearance: none;
+  width: 42px;
+  height: 22px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: .2s;
+}
+
+#filtro-stock::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  background: var(--text-2);
+  transition: .2s;
+}
+
+#filtro-stock:checked {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+}
+
+#filtro-stock:checked::before {
+  left: 22px;
+  background: var(--accent);
+}
+
 .products-layout {
   display: grid;
   grid-template-columns: 1fr 320px;
@@ -496,6 +606,14 @@ html[data-theme="light"] .theme-toggle:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
+}
+
+.products-count {
+    background: var(--accent-glow);
+    color: var(--accent);
+    padding: .25rem .75rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent-dim);
 }
 
 .product-card {
@@ -1117,6 +1235,17 @@ html[data-theme="light"] .theme-toggle:hover {
   font-size: 0.875rem;
   color: var(--text-2);
   margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.page-header__sub::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
 }
 
 .empty-state {

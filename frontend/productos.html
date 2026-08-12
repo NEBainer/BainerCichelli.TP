@@ -60,6 +60,33 @@
       <button class="category-tab" onclick="cambiarCategoria('componente', this)"><i class="fa-solid fa-microchip"></i> Componentes</button>
     </div>
 
+    <div class="filters-bar">
+      <input
+          type="text"
+          id="buscador"
+          placeholder=" Buscar productos..."
+          oninput="buscarProductos(this.value)"
+        >
+
+      <select id="orden-select" onchange="cambiarOrden(this.value)">
+        <option value="default">Ordenar por</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
+        <option value="nombre-asc">Nombre: A-Z</option>
+        <option value="nombre-desc">Nombre: Z-A</option>
+      </select>
+
+      <label>
+          <input
+              type="checkbox"
+              id="filtro-stock"
+              onchange="toggleStock()">
+
+          Solo con stock
+      </label>
+
+    </div>
+
     <div class="products-layout">
 
       <div>
@@ -138,12 +165,65 @@
   </div>
 
   <script>
+    let ordenActual = "default";
+    let textoBusqueda = "";
+    let soloConStock = false;
+
+    const filtrosGuardados = JSON.parse(
+        localStorage.getItem("filtrosProductos")
+    );
+
+    if (filtrosGuardados) {
+
+        ordenActual = filtrosGuardados.ordenActual || "default";
+        textoBusqueda = filtrosGuardados.textoBusqueda || "";
+        soloConStock = filtrosGuardados.soloConStock || false;
+
+    }
+
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     document.querySelector('.theme-toggle').innerHTML =
       savedTheme === 'dark'
         ? '<i class="fa-solid fa-moon"></i>'
         : '<i class="fa-solid fa-sun"></i>';
+
+
+
+    function cambiarOrden(orden) {
+
+      ordenActual = orden;
+
+      guardarFiltros();
+
+      paginaActual = 1;
+
+      renderizarProductos();
+
+    }
+
+    function buscarProductos(texto) {
+
+      textoBusqueda = texto.toLowerCase();
+
+      guardarFiltros();
+
+      paginaActual = 1;
+
+      renderizarProductos();
+
+    }
+
+    function toggleStock() {
+
+        soloConStock = document.getElementById("filtro-stock").checked;
+
+        guardarFiltros();
+
+        paginaActual = 1;
+
+        renderizarProductos();
+    }
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
@@ -188,6 +268,16 @@
       localStorage.setItem('carrito', JSON.stringify(carrito));
       actualizarContadores();
       renderizarSidebar();
+    }
+
+    function guardarFiltros() {
+
+        localStorage.setItem("filtrosProductos", JSON.stringify({
+            ordenActual,
+            textoBusqueda,
+            soloConStock
+        }));
+
     }
 
     function actualizarContadores() {
@@ -329,8 +419,63 @@
     let todosLosProductos = [];
 
     function productosFiltrados() {
-      if (categoriaActual === 'todos') return todosLosProductos;
-      return todosLosProductos.filter(p => p.categoria.toLowerCase() === categoriaActual);
+
+      let productos;
+
+      if (categoriaActual === 'todos') {
+
+        productos = [...todosLosProductos];
+
+      } else {
+
+        productos = todosLosProductos.filter(
+          p => p.categoria.toLowerCase() === categoriaActual
+        );
+
+      }
+
+      if (textoBusqueda) {
+
+        productos = productos.filter(producto =>
+          producto.nombre.toLowerCase().includes(textoBusqueda) ||
+          producto.marca.toLowerCase().includes(textoBusqueda) ||
+          producto.categoria.toLowerCase().includes(textoBusqueda)
+        );
+
+      }
+
+      if (soloConStock) {
+          productos = productos.filter(
+              p => p.stock > 0
+          );
+      }
+
+      switch (ordenActual) {
+
+        case "precio-asc":
+          productos.sort((a, b) => a.precio - b.precio);
+          break;
+
+        case "precio-desc":
+          productos.sort((a, b) => b.precio - a.precio);
+          break;
+
+        case "nombre-asc":
+          productos.sort((a, b) =>
+            a.nombre.localeCompare(b.nombre)
+          );
+          break;
+
+        case "nombre-desc":
+          productos.sort((a, b) =>
+            b.nombre.localeCompare(a.nombre)
+          );
+          break;
+
+      }
+
+      return productos;
+
     }
 
     function mostrarSkeletons() {
@@ -391,13 +536,27 @@
       
 
       if (pagina.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state" style="grid-column:1/-1">
-            <div class="empty-state__icon"><i class="fa-solid fa-face-frown"></i></div>
-            <div class="empty-state__title">No encontramos productos en esta categoría</div>
-          </div>`;
-        document.getElementById('pagination').innerHTML = '';
-        return;
+
+          let mensaje = "No encontramos productos";
+
+          if (textoBusqueda.trim() !== "") {
+              mensaje = `No encontramos productos para "${textoBusqueda}"`;
+          }
+
+          grid.innerHTML = `
+              <div class="empty-state" style="grid-column:1/-1">
+                  <div class="empty-state__icon">
+                      <i class="fa-solid fa-face-frown"></i>
+                  </div>
+                  <div class="empty-state__title">
+                      ${mensaje}
+                  </div>
+              </div>
+          `;
+
+          document.getElementById('pagination').innerHTML = '';
+
+          return;
       }
 
       grid.innerHTML = pagina.map(p => {
@@ -536,6 +695,8 @@
 
           localStorage.removeItem("carrito");
 
+          localStorage.removeItem("filtrosProductos");
+
           window.location.href = "index.html";
         }
       );
@@ -571,6 +732,14 @@
 
     actualizarContadores();
     renderizarSidebar();
+    document.getElementById("orden-select").value =
+        ordenActual;
+
+    document.getElementById("buscador").value =
+        textoBusqueda;
+
+    document.getElementById("filtro-stock").checked =
+        soloConStock;
     cargarProductos();
   </script>
 
