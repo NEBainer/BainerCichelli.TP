@@ -12,7 +12,7 @@
 
   <nav class="navbar">
     <div class="navbar__inner">
-      <a href="index.html" class="navbar__logo">
+      <a href="productos.html" class="navbar__logo">
         <div class="navbar__logo-icon">
           <i class="fa-solid fa-bolt"></i>
         </div>
@@ -69,11 +69,10 @@
         >
 
       <select id="orden-select" onchange="cambiarOrden(this.value)">
-        <option value="default">Ordenar por</option>
-        <option value="precio-asc">Precio: menor a mayor</option>
-        <option value="precio-desc">Precio: mayor a menor</option>
         <option value="nombre-asc">Nombre: A-Z</option>
         <option value="nombre-desc">Nombre: Z-A</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
       </select>
 
       <label>
@@ -413,7 +412,7 @@
       document.getElementById('sidebar-total').textContent = '$' + total.toLocaleString();
     }
 
-    const PRODUCTOS_POR_PAGINA = 6;
+    const PRODUCTOS_POR_PAGINA = 8;
     let paginaActual = 1;
     let categoriaActual = 'todos';
     let todosLosProductos = [];

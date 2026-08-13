@@ -495,7 +495,7 @@ html[data-theme="light"] .theme-toggle:hover {
   border: 1px solid var(--border);
   border-radius: var(--radius);
 
-  padding: 1rem 1.25rem;
+  padding: .75rem 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -523,7 +523,7 @@ html[data-theme="light"] .theme-toggle:hover {
   color: var(--text-1);
   font-size: 0.9rem;
 
-  padding: 0.75rem 1rem;
+  padding: .65rem .9rem;
 
   transition: all var(--transition);
 }
