@@ -8,26 +8,56 @@
     if (link.getAttribute('href') === currentPath) link.classList.add('active');
   });
 
-  const root = document.documentElement;
-  const saved = localStorage.getItem('theme') || 'dark';
-  root.setAttribute('data-theme', saved);
+  const savedTheme =
+      localStorage.getItem("theme") || "dark";
+
+  document.documentElement.setAttribute(
+      "data-theme",
+      savedTheme
+  );
+
+  const themeButton =
+      document.querySelector(".theme-toggle");
+
+  if (themeButton) {
+
+      themeButton.innerHTML =
+          savedTheme === "dark"
+              ? '<i class="fa-solid fa-moon"></i>'
+              : '<i class="fa-solid fa-sun"></i>';
+  }
 
   function toggleTheme() {
-    const current = root.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeBtn();
-  }
 
-  function updateThemeBtn() {
-    const btn = document.getElementById('theme-toggle');
-    if (!btn) return;
-    const isDark = root.getAttribute('data-theme') === 'dark';
-    btn.innerHTML = isDark ? '<i class="fa-regular fa-sun"></i> Modo claro' : '<i class="fa-solid fa-moon"></i> Modo oscuro';
-  }
+      const current =
+          document.documentElement.getAttribute("data-theme");
 
-  updateThemeBtn();
+      const next =
+          current === "dark"
+              ? "light"
+              : "dark";
+
+      document.documentElement.setAttribute(
+          "data-theme",
+          next
+      );
+
+      localStorage.setItem(
+          "theme",
+          next
+      );
+
+      const themeButton =
+          document.querySelector(".theme-toggle");
+
+      if (themeButton) {
+
+          themeButton.innerHTML =
+              next === "dark"
+                  ? '<i class="fa-solid fa-moon"></i>'
+                  : '<i class="fa-solid fa-sun"></i>';
+      }
+  }
 </script>
 
 </body>
