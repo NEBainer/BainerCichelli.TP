@@ -1,73 +1,85 @@
 <%- include('../partials/header') %>
 
-<div class="row justify-content-center">
+<div class="login-page">
 
-  <div class="col-md-6">
+    <div class="login-container">
 
-    <div class="card shadow">
+      <div class="login-brand">
 
-      <div class="card-header bg-primary text-white">
-        <h3><i class="fa-solid fa-right-to-bracket"></i> Login Administrador</h3>
+          <h1 class="dashboard-title">
+              <i class="fa-solid fa-bolt"></i>
+              GigaShop
+          </h1>
+
+          <p class="dashboard-subtitle">
+              Panel de Administración
+          </p>
+
       </div>
 
-      <div class="card-body">
+        <div class="card shadow">
 
-        <% if (error) { %>
-          <div class="alert alert-danger">
-            <%= error %>
-          </div>
-        <% } %>
+            <div class="card-body">
 
-        <form action="/login" method="POST">
+                <% if (error) { %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                <% } %>
 
-          <div class="mb-3">
-            <label>Email</label>
+                <form action="/login" method="POST">
 
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              name="email"
-              required>
-          </div>
+                    <div class="mb-3">
+                        <label>Email</label>
 
-          <div class="mb-3">
-            <label>Contraseña</label>
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            required>
+                    </div>
 
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              name="password"
-              required>
-          </div>
-        <div class="login-actions">
-          <button
-            type="submit"
-            class="btn btn-primary w-100">
+                    <div class="mb-3">
+                        <label>Contraseña</label>
 
-            Ingresar
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            required>
+                    </div>
 
-          </button>
-          <div class="mt-3">
-            <button
-                type="button"
-                class="btn btn-outline-secondary w-100"
-                onclick="accesoRapido()">
+                    <div class="login-actions">
 
-                <div class="brand-icon"><i class="fa-solid fa-bolt"></i></div> Acceso rápido (Profesor)
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
 
-            </button>
-          </div>
+                            Ingresar
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary w-100"
+                            onclick="accesoRapido()">
+
+                            <i class="fa-solid fa-bolt"></i>
+                            Acceso rápido (Profesor)
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
         </div>
 
-        </form>
-
-      </div>
-
     </div>
-
-  </div>
 
 </div>
 
@@ -84,4 +96,5 @@ function accesoRapido() {
 
 }
 </script>
+
 <%- include('../partials/footer') %>

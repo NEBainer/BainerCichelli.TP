@@ -639,6 +639,37 @@ textarea { resize: vertical; min-height: 90px; }
   justify-content: flex-end;
 }
 
+/* =========================
+   LOGIN
+========================= */
+
+.login-page {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    justify-content: center;
+    padding-top: 4rem;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    justify-content: center;
+}
+
+.login-brand {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-brand__title {
+    color: var(--text-1);
+}
+
+.login-brand .dashboard-title i {
+    color: var(--accent);
+    font-size: .9em;
+}
+
 .login-wrapper {
   min-height: 100vh;
   display: flex;
@@ -700,6 +731,8 @@ textarea { resize: vertical; min-height: 90px; }
     gap: 0.75rem;
     margin-top: 0.5rem;
 }
+
+
 
 .quick-access-btn {
   display: flex;
