@@ -1,15 +1,149 @@
 <%- include('partials/header') %>
 
-<div class="text-center py-5">
-    <h1 class="display-4 mb-4"><i class="fa-solid fa-shop"></i> Bienvenido a GigaShop</h1>
-    <div class="d-flex justify-content-center gap-3">
-        <a href="/productos" class="btn btn-primary btn-lg">
-            <i class="fa-solid fa-box"></i> Ver Productos
-        </a>
-        <a href="/productos/crear" class="btn btn-success btn-lg">
-            <i class="fa-solid fa-pen-to-square"></i> Agregar Producto
-        </a>
+<div class="dashboard">
+
+    <div class="dashboard-header">
+
+        <h1 class="dashboard-title">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard Administrativo
+        </h1>
+
+        <p class="dashboard-subtitle">
+            Gestión de productos y ventas de GigaShop
+        </p>
+
     </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card stat-card--info">
+
+            <div class="stat-card__icon">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+
+            <div class="stat-card__number">
+                <%= totalProductos %>
+            </div>
+
+            <div class="stat-card__label">
+                Productos Totales
+            </div>
+
+        </div>
+
+        <div class="stat-card stat-card--success">
+
+            <div class="stat-card__icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div class="stat-card__number">
+                <%= productosActivos %>
+            </div>
+
+            <div class="stat-card__label">
+                Productos Activos
+            </div>
+
+        </div>
+
+        <div class="stat-card stat-card--warning">
+
+            <div class="stat-card__icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="stat-card__number">
+                <%= productosSinStock %>
+            </div>
+
+            <div class="stat-card__label">
+                Sin Stock
+            </div>
+
+        </div>
+
+        <div class="stat-card stat-card--sales">
+
+                <div class="stat-card__icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+
+                <div class="stat-card__number">
+                    <%= totalVentas %>
+                </div>
+
+                <div class="stat-card__label">
+                    Ventas Registradas
+                </div>
+
+        </div>
+    </div>
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card__header">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <h3>Últimas ventas registradas</h3>
+            </div>
+
+            <% if (ultimasVentas.length > 0) { %>
+
+                <table class="dashboard-table">
+
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <% ultimasVentas.forEach(venta => { %>
+
+                            <tr>
+                                <td><%= venta.cliente %></td>
+
+                                <td>
+                                    <%= new Date(venta.fecha)
+                                        .toLocaleDateString('es-AR') %>
+                                </td>
+
+                                <td>
+                                    $<%= venta.total.toLocaleString('es-AR') %>
+                                </td>
+                            </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            <% } else { %>
+
+                <div class="dashboard-empty">
+
+                    <i class="fa-solid fa-receipt"></i>
+
+                    <p>
+                        Todavía no hay ventas registradas.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+        </div>
+
+    </section>
+
 </div>
 
 <%- include('partials/footer') %>
