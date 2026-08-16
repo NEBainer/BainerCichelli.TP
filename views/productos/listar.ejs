@@ -68,15 +68,16 @@
 
                         <% if (producto.activo) { %>
 
-                            <form
-                                action="/productos/eliminar/<%= producto.id %>"
-                                method="POST"
-                                class="flex-fill"
-                                onsubmit="return confirm('¿Desactivar este producto?')">
+                                <form
+                                    id="form-desactivar-<%= producto.id %>"
+                                    action="/productos/eliminar/<%= producto.id %>"
+                                    method="POST"
+                                    class="flex-fill">
 
                                 <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm w-100">
+                                    type="button"
+                                    class="btn btn-danger btn-sm w-100"
+                                    onclick="confirmarDesactivacion(<%= producto.id %>)">
 
                                     <i class="fa-solid fa-toggle-off"></i> Desactivar
 
@@ -86,21 +87,22 @@
 
                         <% } else { %>
 
-                            <form
-                                action="/productos/activar/<%= producto.id %>"
-                                method="POST"
-                                class="flex-fill"
-                                onsubmit="return confirm('¿Activar este producto?')">
+                                <form
+                                    id="form-activar-<%= producto.id %>"
+                                    action="/productos/activar/<%= producto.id %>"
+                                    method="POST"
+                                    class="flex-fill">
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-success btn-sm w-100">
+                                    <button
+                                        type="button"
+                                        class="btn btn-success btn-sm w-100"
+                                        onclick="confirmarActivacion(<%= producto.id %>)">
 
-                                    <i class="fa-solid fa-toggle-on"></i> Activar
+                                        <i class="fa-solid fa-toggle-on"></i> Activar
 
-                                </button>
+                                    </button>
 
-                            </form>
+                                </form>
 
                         <% } %>
 
