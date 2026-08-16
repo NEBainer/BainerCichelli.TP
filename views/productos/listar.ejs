@@ -13,7 +13,7 @@
         <p>¡Agrega tu primer producto!</p>
     </div>
 <% } else { %>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="product-grid">
         <% productos.forEach(producto => { %>
         <div class="col">
             <div class="card producto-card h-100 shadow">
@@ -44,18 +44,21 @@
                     </p>
 
                     <p class="mb-1">
-                        <span class="badge <%= producto.stock > 0 ? 'bg-success' : 'bg-danger' %>">
-                            Stock: <%= producto.stock %>
+                        <strong>Stock:</strong>
+
+                        <span class="<%= producto.stock > 0 ? 'stock-disponible' : 'stock-agotado' %>">
+                            <%= producto.stock %>
                         </span>
                     </p>
-
+                    
                     <h4 class="text-primary">
                         $<%= producto.precio.toFixed(2) %>
                     </h4>
 
-                    <span class="badge <%= producto.activo ? 'bg-success' : 'bg-danger' %>">
-                        <%= producto.activo ? 'Activo' : 'Inactivo' %>
-                    </span>
+                    <div class="estado-producto <%= producto.activo ? 'activo' : 'inactivo' %>">
+                        <i class="fa-solid <%= producto.activo ? 'fa-circle-check' : 'fa-circle-xmark' %>"></i>
+                        <span><%= producto.activo ? 'Activo' : 'Inactivo' %></span>
+                    </div>
                 </div>
 
                 <div class="card-footer bg-white border-top-0">
