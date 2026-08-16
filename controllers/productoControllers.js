@@ -16,7 +16,8 @@ export const listarProductos = async (req, res) => {
 
         res.render('productos/listar', {
             title: 'Lista de Productos',
-            productos: productos
+            productos: productos,
+            success: req.query.success || null
         });
         
     }catch (error){
@@ -49,7 +50,7 @@ export const crearProducto = async (req, res) => {
             }
         });
 
-        res.redirect('/productos');
+        res.redirect('/productos?success=creado');
     }catch (error){
         console.error('error al crear el producto: ', error);
         res.render('productos/crear',{
@@ -112,7 +113,7 @@ export const actualizarProducto = async (req, res) =>{
             }
         });
 
-        res.redirect('/productos');
+        res.redirect('/productos?success=editado');
 
     }catch(error){
         console.error('Error al actulizar el producto: ', error);
@@ -131,7 +132,7 @@ export const eliminarProducto = async (req, res) => {
       }
     });
 
-    res.redirect("/productos");
+    res.redirect('/productos?success=desactivado');
 
   } catch (error) {
     console.error("Error al desactivar producto:", error);
@@ -153,7 +154,7 @@ export const activarProducto = async (req, res) => {
       }
     });
 
-    res.redirect("/productos");
+    res.redirect('/productos?success=activado');
   }
   catch (error) {
     console.error(error);
