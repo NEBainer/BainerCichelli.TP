@@ -1,7 +1,46 @@
-# 🛒GigaShop
-![Vista principal](screen.png)
+# 🛒 GigaShop
+
+![Node.js](https://img.shields.io/badge/Node.js-20-green)
+![Express](https://img.shields.io/badge/Express-Backend-black)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-black)
 
 Sistema de gestión para un autoservicio de productos tecnológicos desarrollado como Trabajo Práctico Integrador para **Programación III**.
+
+---
+
+## 🌐 Demo Online
+
+### Frontend Cliente
+https://bainer-cichelli-tp.vercel.app/frontend/
+
+### Panel Administrador
+https://bainer-cichelli-tp.vercel.app/login
+
+---
+
+## 📸 Capturas de Pantalla
+
+### Pantalla de Bienvenida
+![Pantalla de Bienvenida](image-2.png)
+
+### Catálogo de Productos
+![Catálogo de Productos](image-3.png)
+
+### Carrito de Compras
+![Carrito de compras](image-4.png)
+
+### Ticket de Compra
+![Ticket de compras](image-5.png)
+
+### Dashboard Administrativo
+![Dashboard administrativo](image-6.png)
+
+### Gestión de Productos
+![Gestión de productos](image-8.png)
+
+---
 
 ## 👥 Integrantes
 
@@ -12,20 +51,40 @@ Sistema de gestión para un autoservicio de productos tecnológicos desarrollado
 
 # 📌 Descripción
 
-La aplicación está compuesta por dos módulos:
+La aplicación está compuesta por dos módulos principales:
 
-- **Frontend Cliente**
-  - Permite visualizar productos.
-  - Agregar productos al carrito.
-  - Confirmar compras.
-  - Descargar un comprobante en PDF.
+## 🛍️ Frontend Cliente
 
-- **Panel de Administración**
-  - Login de administrador.
-  - Gestión completa de productos (CRUD).
-  - Activación y desactivación lógica.
-  - Carga de imágenes.
-  - API REST para productos y ventas.
+Permite al usuario:
+
+- Visualizar productos disponibles.
+- Filtrar y buscar productos.
+- Agregar productos al carrito.
+- Modificar cantidades.
+- Confirmar compras.
+- Generar y descargar un comprobante PDF.
+
+## ⚙️ Panel de Administración
+
+Permite al administrador:
+
+- Iniciar sesión.
+- Gestionar productos mediante operaciones CRUD.
+- Activar y desactivar productos.
+- Gestionar imágenes.
+- Consultar ventas realizadas.
+
+---
+
+# ☁️ Deployment
+
+La aplicación se encuentra desplegada en producción utilizando:
+
+- **Vercel** para el hosting de la aplicación.
+- **Supabase** como base de datos PostgreSQL.
+- **Prisma ORM** para el acceso y gestión de datos.
+
+Este despliegue permitió trabajar con una arquitectura full stack real, utilizando servicios cloud para la publicación del proyecto.
 
 ---
 
@@ -51,199 +110,21 @@ La aplicación está compuesta por dos módulos:
 
 ---
 
-# 📂 Estructura del proyecto
+# 🎓 Aprendizajes
 
-```
-.
-├── config/
-├── controllers/
-├── frontend/
-├── middlewares/
-├── prisma/
-├── public/
-├── routes/
-├── src/
-├── views/
-├── app.js
-└── package.json
-```
+Durante el desarrollo de este proyecto se aplicaron y reforzaron conocimientos relacionados con:
 
----
-
-# ⚙️ Instalación
-
-## 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/NEBainer/BainerCichelli.TP.git
-```
-
-## 2. Instalar dependencias
-
-```bash
-npm install
-```
-
-## 3. Configurar las variables de entorno
-
-Crear un archivo `.env`
-
-Ejemplo:
-
-```env
-DATABASE_URL="postgresql://usuario:password@host:5432/database"
-SESSION_SECRET="programacion3tp"
-```
+- Arquitectura MVC.
+- Diseño e implementación de APIs REST.
+- Persistencia de datos utilizando Prisma ORM.
+- Modelado relacional en PostgreSQL.
+- Gestión de sesiones y autenticación.
+- Manejo de archivos e imágenes con Multer.
+- Consumo de APIs mediante Fetch API.
+- Generación de documentos PDF desde el navegador.
+- Validaciones del lado cliente y servidor.
+- Deploy de aplicaciones Node.js utilizando Vercel.
+- Integración de aplicaciones con bases de datos en Supabase.
+- Trabajo colaborativo utilizando Git y GitHub.
 
 ---
-
-## 4. Generar Prisma
-
-```bash
-npx prisma generate
-```
-
----
-
-## 5. Ejecutar el proyecto
-
-```bash
-npm start
-```
-
-o
-
-```bash
-npm run dev
-```
-
----
-
-# 🔐 Acceso al panel administrador
-
-```
-http://localhost:3000/login
-```
-
-El login incluye un botón de **Acceso rápido** que autocompleta las credenciales para facilitar las pruebas.
-
----
-
-# 🌐 Frontend Cliente
-
-```
-http://localhost:3000/frontend/index.html
-```
-
----
-
-# <i class="fa-solid fa-box"></i> Funcionalidades
-
-## Cliente
-
-- Pantalla de bienvenida
-- Cambio de tema (Claro/Oscuro)
-- Visualización de productos
-- Filtrado por categorías
-- Paginación
-- Carrito de compras
-- Confirmación mediante modal
-- Ticket de compra
-- Descarga de PDF
-
----
-
-## Administrador
-
-- Login
-- CRUD de productos
-- Subida de imágenes
-- Validaciones
-- Baja lógica
-- Reactivación de productos
-
----
-
-# 🔌 API REST
-
-## Productos
-
-| Método | Endpoint | Descripción |
-|---------|----------|-------------|
-| GET | `/api/productos` | Obtiene los productos |
-| GET | `/api/productos/:id` | Obtiene un producto |
-
-### Parámetros
-
-| Parámetro | Descripción |
-|-----------|-------------|
-| categoria | Filtra por categoría |
-| buscar | Busca por nombre |
-| page | Paginación |
-
-Ejemplo:
-
-```
-GET /api/productos?categoria=Componente&page=2
-```
-
----
-
-## Ventas
-
-| Método | Endpoint |
-|---------|----------|
-| POST | `/api/ventas` |
-| GET | `/api/ventas` |
-| GET | `/api/ventas/:id` |
-
-Ejemplo:
-
-```json
-{
-  "cliente": "Juan Perez",
-  "productos": [
-    {
-      "id": 5,
-      "cantidad": 2
-    }
-  ]
-}
-```
-
----
-
-## Usuarios
-
-| Método | Endpoint |
-|---------|----------|
-| POST | `/api/usuarios` |
-
-Permite crear un usuario administrador con contraseña encriptada mediante **bcrypt**.
-
----
-
-# 📋 Características implementadas
-
-- Arquitectura MVC
-- API REST
-- Prisma ORM
-- PostgreSQL
-- Autenticación mediante sesiones
-- Contraseñas encriptadas
-- Middlewares de validación
-- Carga de imágenes con Multer
-- Baja lógica de productos
-- Gestión de stock
-- Ticket de compra en PDF
-- Diseño responsive
-- Modo claro / oscuro
-- Paginación de productos
-
----
-
-# 📚 Trabajo Práctico
-
-Trabajo Práctico Integrador correspondiente a la materia **Programación III**.
-
-Universidad Tecnológica Nacional (UTN).
